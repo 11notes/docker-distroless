@@ -1,0 +1,18 @@
+{
+  "image":"11notes/distroless",
+  "name":"distroless",
+  "root":"/distroless",
+  
+  "semver":{
+    "version":"1.0.0",
+    "latest":"1.0.0"
+  },
+
+  "readme":{
+    "description":"Build your own distroless images with this mini file system",
+    "parent":{
+      "image":"scratch"
+    },
+    "distroless":true
+  }
+}
