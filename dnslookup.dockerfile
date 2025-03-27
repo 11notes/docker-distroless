@@ -1,11 +1,10 @@
-ARG APP_ROOT
-
 # :: Util
   FROM 11notes/util AS util
 
 # :: Header
   FROM golang:1.24-alpine AS distroless
   ARG TARGETARCH
+  ARG APP_ROOT
   ARG APP_VERSION
   COPY --from=util /usr/local/bin/ /usr/local/bin
   USER root
@@ -22,10 +21,14 @@ ARG APP_ROOT
     go mod tidy; \
     go build -ldflags="-extldflags=-static"; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
-    mv ./dnslookup ${APP_ROOT}/usr/local/bin;
+    strip ./dnslookup; \
+    cp ./dnslookup ${APP_ROOT}/usr/local/bin;
 
 # :: Distroless
   FROM scratch
+  ARG TARGETARCH
+  ARG APP_ROOT
+  ARG APP_VERSION
   COPY --from=distroless ${APP_ROOT}/ /
 
 # :: Start

@@ -1,8 +1,7 @@
-ARG APP_ROOT
-
 # :: Header
   FROM alpine AS distroless
   ARG TARGETARCH
+  ARG APP_ROOT
   ARG APP_VERSION
   ENV CC=clang
   USER root
@@ -47,6 +46,9 @@ ARG APP_ROOT
 
 # :: Distroless
   FROM scratch
+  ARG TARGETARCH
+  ARG APP_ROOT
+  ARG APP_VERSION
   COPY --from=distroless ${APP_ROOT}/ /
 
 # :: Start

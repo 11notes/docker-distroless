@@ -1,7 +1,8 @@
-ARG APP_ROOT
-
 # :: Header
   FROM alpine AS distroless
+  ARG TARGETARCH
+  ARG APP_ROOT
+  ARG APP_VERSION
   USER root
 
 # :: create users
@@ -31,6 +32,9 @@ ARG APP_ROOT
 
 # :: Distroless
   FROM scratch
+  ARG TARGETARCH
+  ARG APP_ROOT
+  ARG APP_VERSION
   COPY --from=distroless ${APP_ROOT}/ /
 
 # :: Start
