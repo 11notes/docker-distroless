@@ -1,7 +1,8 @@
+ARG APP_ROOT
+
 # :: Header
   FROM alpine AS distroless
   ARG TARGETARCH
-  ARG APP_ROOT
   ARG APP_VERSION
   ENV CC=clang
   USER root
@@ -35,14 +36,14 @@
         --disable-ldap \
         --disable-ipv6 \
         --enable-unix-sockets \
-        --without-ssl  \
+        --with-ssl  \
         --disable-docs \
         --disable-manual \
         --without-libpsl; \
     make -j$(nproc) V=1 LDFLAGS="-static -all-static"; \
     strip src/curl; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
-    mv src/curl ${APP_ROOT}/usr/local/bin;
+    cp ./src/curl ${APP_ROOT}/usr/local/bin;
 
 # :: Distroless
   FROM scratch

@@ -1,6 +1,7 @@
+ARG APP_ROOT
+
 # :: Header
   FROM alpine AS distroless
-  ARG APP_ROOT
   USER root
 
 # :: create users

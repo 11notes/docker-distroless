@@ -1,10 +1,11 @@
+ARG APP_ROOT
+
 # :: Util
   FROM 11notes/util AS util
 
 # :: Header
   FROM golang:1.24-alpine AS distroless
   ARG TARGETARCH
-  ARG APP_ROOT
   ARG APP_VERSION
   COPY --from=util /usr/local/bin/ /usr/local/bin
   USER root
