@@ -5,9 +5,13 @@
   ARG APP_VERSION
   USER root
 
-# :: create users
+# :: create base folders
   RUN set -ex; \
     mkdir -p ${APP_ROOT}/etc; \
+    mkdir -p ${APP_ROOT}/run;
+
+# :: create users
+  RUN set -ex; \
     echo "root:x:0:0:root:/root:/sbin/nologin" > ${APP_ROOT}/etc/passwd; \
     echo "root:x:0:root" > ${APP_ROOT}/etc/group; \
     echo "docker:x:1000:1000:docker:/:/sbin/nologin" >> ${APP_ROOT}/etc/passwd; \
