@@ -6,6 +6,8 @@
   ARG TARGETARCH
   ARG APP_ROOT
   ARG APP_VERSION
+  ENV BUILD_ROOT=/go/dnslookup
+  ENV CGO_ENABLED=0
   COPY --from=util /usr/local/bin/ /usr/local/bin
   USER root
 
@@ -15,18 +17,21 @@
       build-base \
       git; \
     git clone https://github.com/ameshkov/dnslookup.git -b v${APP_VERSION}; \
-    cd /go/dnslookup; \
+    cd ${BUILD_ROOT}; \
     eleven patchGoMod go.mod "golang.org/x/crypto|v0.31.0|CVE-2024-45337"; \
     eleven patchGoMod go.mod "github.com/quic-go/quic-go|v0.48.2|CVE-2024-53259"; \
     eleven patchGoMod go.mod "golang.org/x/net|v0.36.0|CVE-2025-22870"; \
     go mod tidy; \
-    go build -ldflags="-extldflags=-static"; \
+    go build -ldflags="-extldflags=-static";
+
+  RUN set -ex; \
+    cd ${BUILD_ROOT}; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
     strip ./dnslookup; \
     cp ./dnslookup ${APP_ROOT}/usr/local/bin;
 
 # :: Distroless
-  FROM scratch
+  FROM alpine
   ARG TARGETARCH
   ARG APP_ROOT
   ARG APP_VERSION
