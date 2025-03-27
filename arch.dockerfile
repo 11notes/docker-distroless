@@ -27,3 +27,7 @@
       tzdata; \
     mkdir -p ${APP_ROOT}/usr/share/zoneinfo; \
     cp -R /usr/share/zoneinfo/* ${APP_ROOT}/usr/share/zoneinfo;
+
+# :: Distroless
+  FROM scratch
+  COPY --from=distroless --chown=1000:1000 ${APP_ROOT}/ /
