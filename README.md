@@ -12,9 +12,12 @@ These are the main tags for the image. There is also a tag for each commit and i
 * [latest](https://hub.docker.com/r/11notes/distroless/tags?name=latest)
 
 # SYNOPSIS 📖
-**What can I do with this?** This image and its different layers can be used to build a distroless boiler plate for your application. Simply add the base layer and any additional layers (tags) with the stuff you need to run your application. The base layer containers Root CA certificates as well as time zone data and the user configuration for root and docker. Additional layers (tags) are:
+**What can I do with this?** This image and its different layers can be used to build a distroless boiler plate for your application. Simply add the base layer and any additional layers (tags) with the stuff you need to run your application. The base layer containers Root CA certificates as well as time zone data and the user configuration for root and docker. Additional layers (tags) with statically linked binaries are:
 
 * [11notes/distroless:curl](https://github.com/11notes/docker-distroless/blob/master/curl.dockerfile) - curl
+* [11notes/distroless:dnslookup](https://github.com/11notes/docker-distroless/blob/master/dnslookup.dockerfile) - dnslookup
+
+If you need more binaries, open a PR or feature request.
 
 # BUILD 🚧
 ```yaml
@@ -33,4 +36,4 @@ ENTRYPOINT ["curl"]
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-distroless/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-distroless/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-distroless/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 27.03.2025, 09:13:57 (CET)*
+*created 27.03.2025, 09:28:50 (CET)*
