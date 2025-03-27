@@ -12,6 +12,7 @@
 # :: Build
   RUN set -ex; \
     apk --update --no-cache add \
+      build-base \
       git; \
     git clone https://github.com/ameshkov/dnslookup.git -b v${APP_VERSION}; \
     cd /go/dnslookup; \
