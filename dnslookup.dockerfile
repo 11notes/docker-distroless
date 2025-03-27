@@ -25,7 +25,7 @@
 
 # :: Distroless
   FROM scratch
-  COPY --from=distroless --chown=1000:1000 ${APP_ROOT}/ /
+  COPY --from=distroless ${APP_ROOT}/ /
 
 # :: Start
   ENTRYPOINT ["/usr/local/bin/dnslookup"]

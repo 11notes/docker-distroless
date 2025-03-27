@@ -1,5 +1,5 @@
 # :: Header
-  FROM alpine AS fs
+  FROM alpine AS distroless
   ARG APP_ROOT
   USER root
 
@@ -30,4 +30,7 @@
 
 # :: Distroless
   FROM scratch
-  COPY --from=distroless --chown=1000:1000 ${APP_ROOT}/ /
+  COPY --from=distroless ${APP_ROOT}/ /
+
+# :: Start
+  ENTRYPOINT ["/"]
