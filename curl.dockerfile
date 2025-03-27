@@ -3,6 +3,7 @@
   ARG TARGETARCH
   ARG APP_ROOT
   ARG APP_VERSION
+  ENV BUILD_ROOT=/curl-${APP_VERSION}
   ENV CC=clang
   USER root
 
@@ -27,7 +28,7 @@
     tar xzf curl-${APP_VERSION}.tar.gz;
 
   RUN set -ex; \
-    cd /curl-${APP_VERSION}; \
+    cd ${BUILD_ROOT}; \
     LDFLAGS="-static" PKG_CONFIG="pkg-config --static" \
       ./configure \
         --disable-shared \
@@ -40,7 +41,10 @@
         --disable-manual \
         --without-libpsl; \
     make -j$(nproc) V=1 LDFLAGS="-static -all-static"; \
-    strip src/curl; \
+    strip src/curl;
+
+  RUN set -ex; \
+    cd ${BUILD_ROOT}; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
     cp ./src/curl ${APP_ROOT}/usr/local/bin;
 
