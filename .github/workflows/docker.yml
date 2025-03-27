@@ -135,8 +135,8 @@ jobs:
             // setup tags
               if(opt.input?.dockerfile !== 'arch.dockerfile' && opt.input?.tag){
                 docker.image.tags.push(`${context.sha.substring(0,7)}`);
-                docker.image.tags.push(`${docker.image.name}:${opt.input.tag}`);
-                docker.image.tags.push(`${docker.image.name}:${opt.input.tag}-${docker.app.version}`);
+                docker.image.tags.push(opt.input.tag);
+                docker.image.tags.push(`${opt.input.tag}-${docker.app.version}`);
               }else{
                 const semver = opt.dot.semver.version.split('.');
                 docker.image.tags.push(`${context.sha.substring(0,7)}`);
@@ -147,10 +147,10 @@ jobs:
                 }
                 if(opt.dot.semver?.stable && new RegExp(opt.dot.semver.stable, 'ig').test(docker.image.tags.join(','))) docker.image.tags.push('stable');
                 if(opt.dot.semver?.latest && new RegExp(opt.dot.semver.latest, 'ig').test(docker.image.tags.join(','))) docker.image.tags.push('latest');
+              }
 
-                for(let i=0; i<docker.image.tags.length; i++){
-                  docker.image.tags[i] = `${docker.image.name}:${docker.image.prefix}${docker.image.tags[i]}${docker.image.suffix}`;
-                }
+              for(let i=0; i<docker.image.tags.length; i++){
+                docker.image.tags[i] = `${docker.image.name}:${docker.image.prefix}${docker.image.tags[i]}${docker.image.suffix}`;
               }
 
             // setup build arguments
