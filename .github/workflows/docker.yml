@@ -40,6 +40,19 @@ on:
         description: 'suffix for semver tags'
         required: false
 
+      dockerfile:
+        description: 'dockerfile to build from'
+        required: false
+        default: 'arch.dockerfile'
+
+      tag:
+        description: 'single tag'
+        required: false
+      
+      version:
+        description: 'single version'
+        required: false
+
 jobs:
   docker:
     runs-on: ubuntu-22.04
@@ -107,7 +120,7 @@ jobs:
               app:{
                 image:opt.dot.image,
                 name:opt.dot.name,
-                version:opt.dot.semver.version,
+                version:(opt.input?.version || opt.dot.semver.version),
                 root:opt.dot.root,
                 UID:(opt.input?.uid || 1000),
                 GID:(opt.input?.gid || 1000),
@@ -124,18 +137,24 @@ jobs:
             docker.app.suffix = docker.image.suffix;
 
             // setup tags
-              const semver = opt.dot.semver.version.split('.');
-              docker.image.tags.push(`${context.sha.substring(0,7)}`);
-              if(Array.isArray(semver)){
-                if(semver.length >= 1) docker.image.tags.push(`${semver[0]}`);
-                if(semver.length >= 2) docker.image.tags.push(`${semver[0]}.${semver[1]}`);
-                if(semver.length >= 3) docker.image.tags.push(`${semver[0]}.${semver[1]}.${semver[2]}`);
-              }
-              if(opt.dot.semver?.stable && new RegExp(opt.dot.semver.stable, 'ig').test(docker.image.tags.join(','))) docker.image.tags.push('stable');
-              if(opt.dot.semver?.latest && new RegExp(opt.dot.semver.latest, 'ig').test(docker.image.tags.join(','))) docker.image.tags.push('latest');
+              if(opt.input?.dockerfile !== 'arch.dockerfile' && opt.input?.tag){
+                docker.image.tags.push(`${context.sha.substring(0,7)}`);
+                docker.image.tags.push(`${docker.image.name}:${opt.input.tag}`);
+                docker.image.tags.push(`${docker.image.name}:${opt.input.tag}-${docker.app.version}`);
+              }else{
+                const semver = opt.dot.semver.version.split('.');
+                docker.image.tags.push(`${context.sha.substring(0,7)}`);
+                if(Array.isArray(semver)){
+                  if(semver.length >= 1) docker.image.tags.push(`${semver[0]}`);
+                  if(semver.length >= 2) docker.image.tags.push(`${semver[0]}.${semver[1]}`);
+                  if(semver.length >= 3) docker.image.tags.push(`${semver[0]}.${semver[1]}.${semver[2]}`);
+                }
+                if(opt.dot.semver?.stable && new RegExp(opt.dot.semver.stable, 'ig').test(docker.image.tags.join(','))) docker.image.tags.push('stable');
+                if(opt.dot.semver?.latest && new RegExp(opt.dot.semver.latest, 'ig').test(docker.image.tags.join(','))) docker.image.tags.push('latest');
 
-              for(let i=0; i<docker.image.tags.length; i++){
-                docker.image.tags[i] = `${docker.image.name}:${docker.image.prefix}${docker.image.tags[i]}${docker.image.suffix}`;
+                for(let i=0; i<docker.image.tags.length; i++){
+                  docker.image.tags[i] = `${docker.image.name}:${docker.image.prefix}${docker.image.tags[i]}${docker.image.suffix}`;
+                }
               }
 
             // setup build arguments
@@ -154,6 +173,7 @@ jobs:
               core.exportVariable('DOCKER_IMAGE_TAGS', docker.image.tags.join(','));
               core.exportVariable('DOCKER_IMAGE_DESCRIPTION', docker.image.description);
               core.exportVariable('DOCKER_IMAGE_ARGUMENTS', arguments.join("\r\n"));
+              core.exportVariable('DOCKER_IMAGE_DOCKERFILE', opt.input?.dockerfile || 'arch.dockerfile');
 
               core.exportVariable('WORKFLOW_CREATE_RELEASE', (opt.input?.release || true));
               core.exportVariable('WORKFLOW_CREATE_README', (opt.input?.readme || true));
@@ -182,7 +202,7 @@ jobs:
         uses: docker/build-push-action@67a2d409c0a876cbe6b11854e3e25193efe4e62d
         with:
           context: .
-          file: arch.dockerfile
+          file: ${{ env.DOCKER_IMAGE_DOCKERFILE }}
           push: true
           platforms: ${{ env.DOCKER_IMAGE_ARCH }}
           cache-from: type=registry,ref=${{ env.DOCKER_CACHE_NAME }}
@@ -218,7 +238,7 @@ jobs:
         uses: docker/build-push-action@67a2d409c0a876cbe6b11854e3e25193efe4e62d
         with:
           context: .
-          file: arch.dockerfile
+          file: ${{ env.DOCKER_IMAGE_DOCKERFILE }}
           push: true
           sbom: true
           provenance: mode=max
@@ -250,6 +270,12 @@ jobs:
         if: env.WORKFLOW_CREATE_RELEASE == 'true'  && steps.git-log.outcome == 'success'
         id: git-release
         uses: 11notes/action-docker-release@v1
+        # WHY IS THIS ACTION NOT SHA256 PINNED? SECURITY MUCH?!?!?!
+        # ---------------------------------------------------------------------------------
+        # the next step "github / release / create" creates a new release based on the code
+        # in the repo. This code is not modified and can't be modified by this action.
+        # It does create the markdown for the release, which could be abused, but to what
+        # extend? Adding a link to a malicious repo?
         with:
           git_log: ${{ steps.git-log.outputs.commits }}
 
@@ -267,6 +293,32 @@ jobs:
 
 
 
+
+      # LICENSE
+      - name: license / update year
+        continue-on-error: true
+        uses: actions/github-script@62c3794a3eb6788d9a2a72b219504732c0c9a298
+        with:
+          script: |
+            const { existsSync, readFileSync, writeFileSync } = require('node:fs');
+            const { resolve } = require('node:path');
+            const file = 'LICENSE';
+            try{
+              const path = resolve(file);
+              if(existsSync(path)){
+                let license = readFileSync(file).toString();
+                license = license.replace(/Copyright \(c\) \d{4} /i, `Copyright (c) ${new Date().getFullYear()} `);
+                writeFileSync(path, license);
+              }else{
+                throw new Error(`file ${file} does not exist`);
+              }
+            }catch(e){
+              core.setFailed(e);
+            }
+
+
+
+
       # README
       - name: github / checkout master
         continue-on-error: true
@@ -278,6 +330,13 @@ jobs:
         continue-on-error: true
         if: env.WORKFLOW_CREATE_README == 'true' && steps.docker-build.outcome == 'success'
         uses: 11notes/action-docker-readme@v1
+        # WHY IS THIS ACTION NOT SHA256 PINNED? SECURITY MUCH?!?!?!
+        # ---------------------------------------------------------------------------------
+        # the next step "github / commit & push" only adds the README and LICENSE as well as 
+        # compose.yaml to the repository. This does not pose a security risk if this action
+        # would be compromised. The code of the app can't be changed by this action. Since
+        # only the files mentioned are commited to the repo. Sure, someone could make a bad
+        # compose.yaml, but since this serves only as an example I see no harm in that.
         with:
           sarif_file: ${{ steps.grype.outputs.sarif }}
           build_output_metadata: ${{ steps.docker-build.outputs.metadata }}
@@ -291,6 +350,9 @@ jobs:
           git add README.md
           if [ -f compose.yaml ]; then
             git add compose.yaml
+          fi
+          if [ -f LICENSE ]; then
+            git add LICENSE
           fi
           git commit -m "auto update README.md"
           git push
@@ -307,7 +369,8 @@ jobs:
           provider: dockerhub
           short_description: ${{ env.DOCKER_IMAGE_DESCRIPTION }}
           readme_file: 'README_DOCKER.md'
-      
+
+
 
 
       # REPOSITORY SETTINGS

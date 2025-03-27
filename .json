@@ -9,7 +9,7 @@
   },
 
   "readme":{
-    "description":"Build your own distroless images with this mini file system",
+    "description":"Build your own distroless images with this mini file system and binaries",
     "parent":{
       "image":"scratch"
     },
