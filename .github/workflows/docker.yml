@@ -137,6 +137,7 @@ jobs:
                 docker.image.tags.push(`${context.sha.substring(0,7)}`);
                 docker.image.tags.push(opt.input.tag);
                 docker.image.tags.push(`${opt.input.tag}-${docker.app.version}`);
+                docker.cache.name = `${docker.image.name}:buildcache-${opt.input.tag}`;
               }else{
                 const semver = opt.dot.semver.version.split('.');
                 docker.image.tags.push(`${context.sha.substring(0,7)}`);
