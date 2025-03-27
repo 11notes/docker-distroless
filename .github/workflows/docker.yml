@@ -20,10 +20,6 @@ on:
         required: false
         default: 'false'
 
-      image:
-        description: 'set IMAGE'
-        required: false
-
       uid:
         description: 'set IMAGE_UID'
         required: false
@@ -110,7 +106,7 @@ jobs:
 
             const docker = {
               image:{
-                name:(opt.input?.image || opt.dot.image),
+                name:opt.dot.image,
                 arch:(opt.dot.arch || 'linux/amd64,linux/arm64'),
                 prefix:((opt.input?.semverprefix) ? `${opt.input?.semverprefix}-` : ''),
                 suffix:((opt.input?.semversuffix) ? `-${opt.input?.semversuffix}` : ''),
