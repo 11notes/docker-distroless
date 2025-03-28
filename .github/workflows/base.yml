@@ -12,4 +12,4 @@ jobs:
         with:
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"true", "readme":"true" }'
+          inputs: '{ "release":"true", "readme":"true", "version":"latest" }'
