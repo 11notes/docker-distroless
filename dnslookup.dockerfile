@@ -7,6 +7,7 @@
   ARG APP_ROOT
   ARG APP_VERSION
   ENV BUILD_ROOT=/go/dnslookup
+  ENV BUILD_BIN=${BUILD_ROOT}/dnslookup
   ENV CGO_ENABLED=0
   COPY --from=util /usr/local/bin/ /usr/local/bin
   USER root
@@ -15,6 +16,7 @@
   RUN set -ex; \
     apk --update --no-cache add \
       build-base \
+      upx \
       git; \
     git clone https://github.com/ameshkov/dnslookup.git -b v${APP_VERSION}; \
     cd ${BUILD_ROOT}; \
@@ -27,8 +29,8 @@
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
-    strip ./dnslookup; \
-    cp ./dnslookup ${APP_ROOT}/usr/local/bin;
+    eleven strip ${BUILD_BIN}; \
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 # :: Distroless
   FROM alpine

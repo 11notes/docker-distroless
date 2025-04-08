@@ -1,11 +1,16 @@
+# :: Util
+  FROM 11notes/util AS util
+
 # :: Header
   FROM alpine AS distroless
   ARG TARGETARCH
   ARG APP_ROOT
   ARG APP_VERSION
   ENV BUILD_ROOT=/curl-${APP_VERSION}
+  ENV BUILD_BIN=/curl-${APP_VERSION}/src/curl
   ENV CC=clang
   USER root
+  COPY --from=util /usr/local/bin/ /usr/local/bin
 
 # :: Build
   RUN set -ex; \
@@ -21,6 +26,7 @@
       openssl-libs-static \
       zlib-static \
       tar \
+      upx \
       wget;
 
   RUN set -ex; \
@@ -44,9 +50,9 @@
     strip src/curl;
 
   RUN set -ex; \
-    cd ${BUILD_ROOT}; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
-    cp ./src/curl ${APP_ROOT}/usr/local/bin;
+    eleven strip ${BUILD_BIN}; \
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 # :: Distroless
   FROM scratch
