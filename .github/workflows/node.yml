@@ -2,9 +2,9 @@ name: tags
 on:
   push:
     tags:
-      - 'curl'
+      - 'node'
 jobs:
-  curl:
+  node:
     runs-on: ubuntu-latest
     steps:   
       - name: build docker image
