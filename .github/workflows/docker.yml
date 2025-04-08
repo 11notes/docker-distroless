@@ -67,6 +67,9 @@ jobs:
             try{
               if(inputs.length > 0){
                 opt.input = JSON.parse(inputs);
+                if(opt.input?.etc){
+                  opt.input.etc = JSON.parse(opt.input.etc);
+                }
               }
             }catch(e){
               core.warning('could not parse github.event.inputs');

@@ -12,4 +12,4 @@ jobs:
         with:
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"false", "run-name":"node", "etc":{"dockerfile":"node.dockerfile", "tag":"node", "version":"22.14.0"} }'
+          inputs: '{ "release":"false", "readme":"false", "run-name":"node", "etc":"{\"dockerfile\":\"node.dockerfile\", \"tag\":\"node\", \"version\":\"22.14.0\"}" }'
