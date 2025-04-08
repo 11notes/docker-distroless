@@ -27,8 +27,9 @@ on:
         default: 'false'
         
       etc:
-        description: 'json object with additional options due to 10 inputs limit'
+        description: 'base64 encoded json string'
         required: false
+        default: 'e30=' # {}
 
 jobs:
   docker:
@@ -61,6 +62,7 @@ jobs:
             const { existsSync, readFileSync } = require('node:fs');
             const { resolve } = require('node:path');
             const { inspect } = require('node:util');
+            const { Buffer } = require('node:buffer');
             const inputs = `${{ toJSON(github.event.inputs) }}`; core.info(inspect(inputs, {showHidden:false, depth:null, colors:true}));
             const opt = {input:{}, dot:{}};            
 
@@ -68,7 +70,7 @@ jobs:
               if(inputs.length > 0){
                 opt.input = JSON.parse(inputs);
                 if(opt.input?.etc){
-                  opt.input.etc = JSON.parse(opt.input.etc);
+                  opt.input.etc = JSON.parse(Buffer.from(opt.input.etc, 'base64').toString('ascii'));
                 }
               }
             }catch(e){
