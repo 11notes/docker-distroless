@@ -2,9 +2,9 @@ name: tags
 on:
   push:
     tags:
-      - 'v*'
+      - 'curl'
 jobs:
-  base:
+  curl:
     runs-on: ubuntu-latest
     steps:   
       - name: build docker image
@@ -12,4 +12,4 @@ jobs:
         with:
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"true", "readme":"true", "etc":{"version":"latest"} }'
+          inputs: '{ "release":"false", "readme":"false", "run-name":"node", "etc":{"dockerfile":"node.dockerfile", "tag":"node", "version":"22.14.0"} }'

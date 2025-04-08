@@ -12,4 +12,4 @@ jobs:
         with:
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"false", "run-name":"curl", "dockerfile":"curl.dockerfile", "tag":"curl", "version":"8.12.1" }'
+          inputs: '{ "release":"false", "readme":"false", "run-name":"curl", "etc":{"dockerfile":"curl.dockerfile", "tag":"curl", "version":"8.12.1"} }'
