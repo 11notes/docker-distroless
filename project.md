@@ -2,6 +2,7 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 
 * [11notes/distroless:curl](https://github.com/11notes/docker-distroless/blob/master/curl.dockerfile) - curl
 * [11notes/distroless:dnslookup](https://github.com/11notes/docker-distroless/blob/master/dnslookup.dockerfile) - dnslookup
+* [11notes/distroless:node](https://github.com/11notes/docker-node/blob/master/arch.dockerfile) - node
 
 If you need more binaries, open a PR or feature request.
 
