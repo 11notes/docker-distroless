@@ -61,7 +61,7 @@ jobs:
             const { existsSync, readFileSync } = require('node:fs');
             const { resolve } = require('node:path');
             const { inspect } = require('node:util');
-            const inputs = `${{ toJSON(github.event.inputs) }}`;
+            const inputs = `${{ toJSON(github.event.inputs) }}`; core.info(inspect(inputs, {showHidden:false, depth:null, colors:true}));
             const opt = {input:{}, dot:{}};            
 
             try{
