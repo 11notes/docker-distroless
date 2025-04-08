@@ -29,7 +29,6 @@ on:
       etc:
         description: 'base64 encoded json string'
         required: false
-        default: 'e30=' # {}
 
 jobs:
   docker:
@@ -63,7 +62,7 @@ jobs:
             const { resolve } = require('node:path');
             const { inspect } = require('node:util');
             const { Buffer } = require('node:buffer');
-            const inputs = `${{ toJSON(github.event.inputs) }}`; core.info(inspect(inputs, {showHidden:false, depth:null, colors:true}));
+            const inputs = `${{ toJSON(github.event.inputs) }}`;
             const opt = {input:{}, dot:{}};            
 
             try{
