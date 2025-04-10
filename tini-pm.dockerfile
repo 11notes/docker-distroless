@@ -6,7 +6,7 @@
   ARG TARGETARCH
   ARG APP_ROOT
   ARG APP_VERSION
-  ENV BUILD_ROOT=/go/tini-pm
+  ENV BUILD_ROOT=/go/go-tini-pm
   ENV BUILD_BIN=${BUILD_ROOT}/tini-pm
   ENV CC=clang
   ENV CGO_ENABLED=0
