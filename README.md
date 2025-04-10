@@ -22,6 +22,7 @@ docker pull quay.io/11notes/distroless:latest
 
 * [11notes/distroless:curl](https://github.com/11notes/docker-distroless/blob/master/curl.dockerfile) - curl
 * [11notes/distroless:dnslookup](https://github.com/11notes/docker-distroless/blob/master/dnslookup.dockerfile) - dnslookup
+* [11notes/distroless:node](https://github.com/11notes/docker-node/blob/master/arch.dockerfile) - node
 
 If you need more binaries, open a PR or feature request.
 
@@ -42,4 +43,4 @@ ENTRYPOINT ["curl"]
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-distroless/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-distroless/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-distroless/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 01.04.2025, 11:55:51 (CET)*
+*created 09.04.2025, 12:08:30 (CET)*
