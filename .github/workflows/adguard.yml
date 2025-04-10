@@ -2,9 +2,9 @@ name: tags
 on:
   push:
     tags:
-      - 'node'
+      - 'adguard'
 jobs:
-  node:
+  adguard:
     runs-on: ubuntu-latest
     steps:   
       - name: init / base64 nested json
@@ -14,11 +14,11 @@ jobs:
             const { Buffer } = require('node:buffer');
             (async()=>{
               try{
-                const master = await fetch('https://raw.githubusercontent.com/11notes/docker-node/refs/heads/master/.json');
+                const master = await fetch('https://raw.githubusercontent.com/11notes/docker-adguard/refs/heads/master/.json');
                 const dot = await master.json();
                 const etc = {
-                  dockerfile:"node.dockerfile",
-                  tag:"node",
+                  dockerfile:"adguard.dockerfile",
+                  tag:"adguard",
                   version:dot.semver.version,
                 };
                 core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
@@ -32,4 +32,4 @@ jobs:
         with:
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"true", "run-name":"node", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
+          inputs: '{ "release":"false", "readme":"true", "run-name":"adguard", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
