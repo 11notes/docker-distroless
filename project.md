@@ -2,7 +2,9 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 
 * [11notes/distroless:curl](https://github.com/11notes/docker-distroless/blob/master/curl.dockerfile) - curl
 * [11notes/distroless:dnslookup](https://github.com/11notes/docker-distroless/blob/master/dnslookup.dockerfile) - dnslookup
-* [11notes/distroless:node](https://github.com/11notes/docker-node/blob/master/arch.dockerfile) - node
+* [11notes/distroless:node](https://github.com/11notes/docker-node) - node
+* [11notes/distroless:tini-pm](https://github.com/11notes/go-tini-pm) - tini-pm
+* [11notes/distroless:adguard](https://github.com/11notes/docker-adguard) - adguard
 
 If you need more binaries, open a PR or feature request.
 
