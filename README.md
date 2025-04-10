@@ -40,7 +40,15 @@ ENTRYPOINT ["curl"]
 # SOURCE 💾
 * [11notes/distroless](https://github.com/11notes/docker-DISTROLESS)
 
+# PATCHED CVE 🦟
+Unlike other popular image providers, this image contains individual CVE fixes to create a clean container image even if the developers of the original app simply forgot or refuse to do that. Why not add a PR with these fixes? Well, many developers ignore PR for CVE fixes and don’t run any code security scanners against their repos. Some simply don’t care.
+
+
+| ID | Severity | Risk | Vector | Source |
+| --- | --- | --- | --- | --- |
+| CVE-2024-45337 | critical | low | [CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N](https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N) | [nvd.nist.gov](https://nvd.nist.gov/vuln/detail/CVE-2024-45337) |
+
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-distroless/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-distroless/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-distroless/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 09.04.2025, 12:08:30 (CET)*
+*created 10.04.2025, 10:10:52 (CET)*
