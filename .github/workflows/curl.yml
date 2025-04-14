@@ -15,7 +15,7 @@ jobs:
             const etc = {
               dockerfile:"curl.dockerfile",
               tag:"curl",
-              version:"8.12.1"
+              version:"8.13.0"
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
