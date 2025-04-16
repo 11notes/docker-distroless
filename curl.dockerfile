@@ -2,7 +2,7 @@
   FROM 11notes/util AS util
 
 # :: Header
-  FROM alpine AS distroless
+  FROM alpine AS build
   ARG TARGETARCH
   ARG APP_ROOT
   ARG APP_VERSION
@@ -46,8 +46,7 @@
         --disable-docs \
         --disable-manual \
         --without-libpsl; \
-    make -j$(nproc) V=1 LDFLAGS="-static -all-static"; \
-    strip src/curl;
+    make -j$(nproc) V=1 LDFLAGS="-static -all-static";
 
   RUN set -ex; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
@@ -55,11 +54,13 @@
     cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 # :: Distroless
+  FROM 11notes/distroless AS distroless
   FROM scratch
-  ARG TARGETARCH
   ARG APP_ROOT
-  ARG APP_VERSION
-  COPY --from=distroless ${APP_ROOT}/ /
+  ARG APP_UID
+  ARG APP_GID
+  COPY --from=distroless --chown=${APP_UID}:${APP_GID} / /
+  COPY --from=build --chown=${APP_UID}:${APP_GID} ${APP_ROOT}/ /
 
 # :: Start
   ENTRYPOINT ["/usr/local/bin/curl"]
