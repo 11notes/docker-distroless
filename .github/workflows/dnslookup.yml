@@ -24,4 +24,4 @@ jobs:
         with:
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"false", "run-name":"dnslookup", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
+          inputs: '{ "runs-on":"self-hosted", "release":"false", "readme":"false", "run-name":"dnslookup", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
