@@ -25,6 +25,7 @@ docker pull quay.io/11notes/distroless:latest
 * [11notes/distroless:node](https://github.com/11notes/docker-node) - node
 * [11notes/distroless:adguard](https://github.com/11notes/docker-adguard) - adguard
 * [11notes/distroless:nginx](https://github.com/11notes/docker-nginx) - nginx
+* [11notes/distroless:traefik](https://github.com/11notes/docker-traefik) - traefik
 * [11notes/distroless:tini-pm](https://github.com/11notes/go-tini-pm) - tini-pm
 
 Each tag has sub tags like latest, stable or semver, check the tags available for each binary. If you need more binaries, open a PR or feature request.
@@ -47,4 +48,4 @@ ENTRYPOINT ["curl"]
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-distroless/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-distroless/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-distroless/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 14.04.2025, 21:52:43 (CET)*
+*created 15.04.2025, 11:42:40 (CET)*
