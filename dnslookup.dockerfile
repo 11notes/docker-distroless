@@ -33,7 +33,7 @@
     cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 # :: Distroless
-  FROM alpine
+  FROM scratch
   ARG TARGETARCH
   ARG APP_ROOT
   ARG APP_VERSION
