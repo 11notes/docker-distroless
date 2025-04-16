@@ -39,7 +39,9 @@
   ARG TARGETARCH
   ARG APP_ROOT
   ARG APP_VERSION
-  COPY --from=distroless ${APP_ROOT}/ /
+  ARG APP_UID
+  ARG APP_GID
+  COPY --from=distroless --chown=${APP_UID}:${APP_GID} ${APP_ROOT}/ /
 
 # :: Start
   ENTRYPOINT ["/"]
