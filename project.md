@@ -2,6 +2,7 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 
 * [11notes/distroless:curl](https://github.com/11notes/docker-distroless/blob/master/curl.dockerfile) - curl (for healthchecks)
 * [11notes/distroless:dnslookup](https://github.com/11notes/docker-distroless/blob/master/dnslookup.dockerfile) - dnslookup (for healthchecks)
+* [11notes/distroless:lego](https://github.com/11notes/docker-distroless/blob/master/lego.dockerfile) - lego (ACME client)
 * [11notes/distroless:node](https://github.com/11notes/docker-node) - node
 * [11notes/distroless:adguard](https://github.com/11notes/docker-adguard) - adguard
 * [11notes/distroless:nginx](https://github.com/11notes/docker-nginx) - nginx
