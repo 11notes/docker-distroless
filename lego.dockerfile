@@ -20,9 +20,8 @@ FROM 11notes/util AS util
       git; \
     git clone https://github.com/go-acme/lego.git -b v${APP_VERSION}; \
     cd ${BUILD_ROOT}; \
-    # eleven patchGoMod go.mod "golang.org/x/crypto|v0.31.0|CVE-2024-45337";
     go mod tidy; \
-    go build -trimpath -ldflags '-X "main.version=${APP_VERSION}" -extldflags=-static' -o  dist/lego ./cmd/lego/;
+    go build -trimpath -ldflags '-X "main.version='${APP_VERSION}'" -extldflags=-static' -o  dist/lego ./cmd/lego/;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
@@ -31,10 +30,13 @@ FROM 11notes/util AS util
     cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 # :: Distroless
+  FROM 11notes/distroless AS distroless
   FROM scratch
   ARG APP_ROOT
-  ARG APP_VERSION
-  COPY --from=build ${APP_ROOT}/ /
+  ARG APP_UID
+  ARG APP_GID
+  COPY --from=distroless --chown=${APP_UID}:${APP_GID} / /
+  COPY --from=build --chown=${APP_UID}:${APP_GID} ${APP_ROOT}/ /
 
 # :: Start
   ENTRYPOINT ["/usr/local/bin/lego"]
