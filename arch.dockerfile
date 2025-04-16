@@ -1,3 +1,6 @@
+ARG APP_UID=1000
+ARG APP_GID=1000
+
 # :: Header
   FROM alpine AS distroless
   ARG TARGETARCH
@@ -36,12 +39,11 @@
 
 # :: Distroless
   FROM scratch
-  ARG TARGETARCH
   ARG APP_ROOT
-  ARG APP_VERSION
   ARG APP_UID
   ARG APP_GID
   COPY --from=distroless --chown=${APP_UID}:${APP_GID} ${APP_ROOT}/ /
 
 # :: Start
+  USER ${APP_UID}:${APP_GID}
   ENTRYPOINT ["/"]

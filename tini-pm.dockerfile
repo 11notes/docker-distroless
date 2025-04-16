@@ -1,3 +1,6 @@
+ARG APP_UID=1000
+ARG APP_GID=1000
+
 # :: Util
   FROM 11notes/util AS util
 
@@ -34,8 +37,10 @@
   FROM scratch
   ARG TARGETARCH
   ARG APP_ROOT
-  ARG APP_VERSION
-  COPY --from=build ${APP_ROOT}/ /
+  ARG APP_UID
+  ARG APP_GID
+  COPY --from=build --chown=${APP_UID}:${APP_GID} ${APP_ROOT}/ /
 
 # :: Start
+  USER ${APP_UID}:${APP_GID}
   ENTRYPOINT ["/usr/local/bin/tini-pm"]

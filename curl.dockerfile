@@ -1,3 +1,6 @@
+ARG APP_UID=1000
+ARG APP_GID=1000
+
 # :: Util
   FROM 11notes/util AS util
 
@@ -63,4 +66,5 @@
   COPY --from=build --chown=${APP_UID}:${APP_GID} ${APP_ROOT}/ /
 
 # :: Start
+  USER ${APP_UID}:${APP_GID}
   ENTRYPOINT ["/usr/local/bin/curl"]

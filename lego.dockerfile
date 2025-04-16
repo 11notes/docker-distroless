@@ -1,5 +1,8 @@
+ARG APP_UID=1000
+ARG APP_GID=1000
+
 # :: Util
-FROM 11notes/util AS util
+  FROM 11notes/util AS util
 
 # :: Header
   FROM golang:1.24-alpine AS build
@@ -26,7 +29,6 @@ FROM 11notes/util AS util
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
-    mkdir -p ${APP_ROOT}/lego/var; \
     eleven strip ${BUILD_BIN}; \
     cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
@@ -36,12 +38,9 @@ FROM 11notes/util AS util
   ARG APP_ROOT
   ARG APP_UID
   ARG APP_GID
-  ENV LEGO_PATH=/lego/var
   COPY --from=distroless --chown=${APP_UID}:${APP_GID} / /
   COPY --from=build --chown=${APP_UID}:${APP_GID} ${APP_ROOT}/ /
 
-# :: Volumes
-  VOLUME ["/lego/var"]
-
 # :: Start
+  USER ${APP_UID}:${APP_GID}
   ENTRYPOINT ["/usr/local/bin/lego"]
