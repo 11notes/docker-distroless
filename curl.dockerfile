@@ -49,7 +49,7 @@ ARG APP_GID=1000
         --disable-docs \
         --disable-manual \
         --without-libpsl; \
-    make -j$(nproc) V=1 LDFLAGS="-static -all-static";
+    make -s -j $(nproc) V=1 LDFLAGS="-static -all-static";
 
   RUN set -ex; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
