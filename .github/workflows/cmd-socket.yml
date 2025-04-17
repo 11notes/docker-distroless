@@ -1,0 +1,27 @@
+name: tags
+on:
+  push:
+    tags:
+      - 'cmd-socket'
+jobs:
+  cmd-socket:
+    runs-on: ubuntu-latest
+    steps:   
+      - name: init / base64 nested json
+        uses: actions/github-script@62c3794a3eb6788d9a2a72b219504732c0c9a298
+        with:
+          script: |
+            const { Buffer } = require('node:buffer');
+            const etc = {
+              dockerfile:"cmd-socket.dockerfile",
+              tag:"cmd-socket",
+              version:"latest"
+            };
+            core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
+
+      - name: build docker image
+        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
+        with:
+          workflow: docker.yml
+          token: "${{ secrets.REPOSITORY_TOKEN }}"
+          inputs: '{ "runs-on":"self-hosted", "release":"false", "readme":"false", "run-name":"cmd-socket", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
