@@ -6,7 +6,6 @@ ARG APP_GID=1000
 
 # :: Header
   FROM golang:1.24-alpine AS distroless
-  ARG TARGETARCH
   ARG APP_ROOT
   ARG APP_VERSION
   ENV BUILD_ROOT=/go/dnslookup
@@ -37,7 +36,6 @@ ARG APP_GID=1000
 
 # :: Distroless
   FROM scratch
-  ARG TARGETARCH
   ARG APP_ROOT
   ARG APP_UID
   ARG APP_GID
