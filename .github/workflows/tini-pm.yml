@@ -15,7 +15,7 @@ jobs:
             const etc = {
               dockerfile:"tini-pm.dockerfile",
               tag:"tini-pm",
-              version:"1.0.0"
+              version:"latest"
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
