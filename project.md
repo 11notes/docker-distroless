@@ -8,6 +8,7 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 * [11notes/distroless:nginx](https://github.com/11notes/docker-nginx) - nginx
 * [11notes/distroless:traefik](https://github.com/11notes/docker-traefik) - traefik
 * [11notes/distroless:tini-pm](https://github.com/11notes/go-tini-pm) - tini-pm
+* [11notes/distroless:cmd-socket](https://github.com/11notes/go-cmd-socket) - cmd-socket
 
 Each tag has sub tags like latest, stable or semver, check the tags available for each binary. If you need more binaries, open a PR or feature request.
 
