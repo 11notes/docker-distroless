@@ -7,6 +7,7 @@ ARG APP_GID=1000
 # :: Header
   FROM golang:1.24-alpine AS build
   ARG APP_ROOT
+  ARG APP_NO_CACHE
   ENV BUILD_ROOT=/go/go-cmd-socket
   ENV BUILD_BIN=${BUILD_ROOT}/cmd-socket
   ENV CGO_ENABLED=0
