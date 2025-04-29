@@ -23,13 +23,6 @@ ARG APP_GID=1000
       git; \
     git clone https://github.com/go-acme/lego.git -b v${APP_VERSION};
 
-  COPY ./build/lego ${BUILD_ROOT}
-
-  RUN set -ex; \
-    cd ${BUILD_ROOT}; \
-    git apply no-email.patch; \
-    go mod tidy;
-
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
     go build -trimpath -ldflags '-X "main.version='${APP_VERSION}'" -extldflags=-static' -o  dist/lego ./cmd/lego/;
