@@ -52,8 +52,9 @@ ARG APP_GID=1000
     make -s -j $(nproc) V=1 LDFLAGS="-static -all-static";
 
   RUN set -ex; \
-    mkdir -p ${APP_ROOT}/usr/local/bin; \
+    eleven checkStatic ${BUILD_BIN}; \
     eleven strip ${BUILD_BIN}; \
+    mkdir -p ${APP_ROOT}/usr/local/bin; \
     cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 # :: Distroless

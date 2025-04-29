@@ -29,9 +29,9 @@ ARG APP_GID=1000
     go build -ldflags="-extldflags=-static";
 
   RUN set -ex; \
-    cd ${BUILD_ROOT}; \
-    mkdir -p ${APP_ROOT}/usr/local/bin; \
+    eleven checkStatic ${BUILD_BIN}; \
     eleven strip ${BUILD_BIN}; \
+    mkdir -p ${APP_ROOT}/usr/local/bin; \
     cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 # :: Distroless
