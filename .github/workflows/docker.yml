@@ -45,7 +45,6 @@ jobs:
       actions: read
       contents: write
       packages: write
-      security-events: write
 
     steps:   
       - name: init / checkout
@@ -154,6 +153,11 @@ jobs:
                   docker.app[arg] = opt.input.etc.build.args[arg];
                 }
               }
+              if(opt.dot?.build?.args){
+                for(const arg in opt.dot.build.args){
+                  docker.app[arg] = opt.dot.build.args[arg];
+                }
+              }
               const arguments = [];
               for(const argument in docker.app){
                 arguments.push(`APP_${argument.toUpperCase()}=${docker.app[argument]}`);
@@ -175,6 +179,11 @@ jobs:
               core.exportVariable('WORKFLOW_CREATE_README', (opt.input?.readme === undefined) ? false : opt.input.readme);
               core.exportVariable('WORKFLOW_GRYPE_FAIL_ON_SEVERITY', (opt.dot?.grype?.fail === undefined) ? true : opt.dot.grype.fail);
               core.exportVariable('WORKFLOW_GRYPE_SEVERITY_CUTOFF', (opt.dot?.grype?.severity || 'high'));
+              if(opt.dot?.readme?.comparison){
+                core.exportVariable('WORKFLOW_CREATE_COMPARISON', true);
+                core.exportVariable('WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE', opt.dot.readme.comparison.image);
+                core.exportVariable('WORKFLOW_CREATE_COMPARISON_IMAGE', `${docker.image.name}:${docker.app.version}`);
+              }
 
 
 
@@ -333,10 +342,20 @@ jobs:
 
 
       # README
-      - name: github / checkout master
+      - name: github / checkout HEAD
         continue-on-error: true
-        run: |         
-          git checkout master
+        run: |     
+          git checkout HEAD
+
+      - name: docker / setup comparison images
+        if: env.WORKFLOW_CREATE_COMPARISON == 'true'
+        continue-on-error: true
+        run: |    
+          docker image pull ${{ env.WORKFLOW_CREATE_COMPARISON_IMAGE }}
+          docker image pull ${{ env.WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE }}
+          docker image ls --filter "reference=${{ env.WORKFLOW_CREATE_COMPARISON_IMAGE }}" --format json | jq --raw-output '.Size' &> ./comparison.size0.log
+          docker image ls --filter "reference=${{ env.WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE }}" --format json | jq --raw-output '.Size' &> ./comparison.size1.log
+          docker run --entrypoint "/bin/sh" --rm ${{ env.WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE }} -c id &> ./comparison.id.log
 
       - name: github / create README.md
         id: github-readme
@@ -391,8 +410,8 @@ jobs:
           if [ -f LICENSE ]; then
             git add LICENSE
           fi
-          git commit -m "auto update README.md"
-          git push
+          git commit -m "github-actions[bot]: update README.md"
+          git push origin HEAD:master
 
 
 
