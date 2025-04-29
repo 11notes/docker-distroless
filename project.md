@@ -1,13 +1,19 @@
 ${{ content_synopsis }} This image and its different layers can be used to build a distroless boiler plate for your application. Simply add the base layer and any additional layers (tags) with the stuff you need to run your application. All binaries are statically compiled and do not depend on any OS libraries or clib. The base layer contains Root CA certificates as well as time zone data and the user configuration for root and docker. Additional layers (tags) with statically compiled binaries are:
 
+# STAND-ALONE BINARIES
 * [11notes/distroless:curl](https://github.com/11notes/docker-distroless/blob/master/curl.dockerfile) - curl
 * [11notes/distroless:dnslookup](https://github.com/11notes/docker-distroless/blob/master/dnslookup.dockerfile) - dnslookup
 * [11notes/distroless:lego](https://github.com/11notes/docker-distroless/blob/master/lego.dockerfile) - lego
+* [11notes/distroless:par2](https://github.com/11notes/docker-distroless/blob/master/par2.dockerfile) - par2
+
+# APPLICATION SUITES
 * [11notes/distroless:node](https://github.com/11notes/docker-node) - node
 * [11notes/distroless:adguard](https://github.com/11notes/docker-adguard) - adguard
 * [11notes/distroless:adguard-sync](https://github.com/11notes/docker-adguard-sync) - adguard-sync
 * [11notes/distroless:nginx](https://github.com/11notes/docker-nginx) - nginx
 * [11notes/distroless:traefik](https://github.com/11notes/docker-traefik) - traefik
+
+# CONTAINER BUILD HELPERS
 * [11notes/distroless:tini-pm](https://github.com/11notes/go-tini-pm) - tini-pm
 * [11notes/distroless:cmd-socket](https://github.com/11notes/go-cmd-socket) - cmd-socket
 * [11notes/distroless:socket-proxy](https://github.com/11notes/docker-socket-proxy) - socket-proxy
