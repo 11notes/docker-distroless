@@ -1,12 +1,24 @@
 name: tags
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * *"
   push:
     tags:
       - 'lego'
 jobs:
   lego:
     runs-on: ubuntu-latest
-    steps:   
+    steps:
+      - name: cron-update / get latest version
+        run: |
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/go-acme/lego/releases/latest | jq -r '.tag_name' | sed 's/v//')
+          echo "LATEST_VERSION=${LATEST_VERSION}" >> "${GITHUB_ENV}"
+          if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/lego-${LATEST_VERSION}; then
+            echo "tag ${LATEST_VERSION} exists already!"
+            exit 1
+          fi
+
       - name: init / base64 nested json
         uses: actions/github-script@62c3794a3eb6788d9a2a72b219504732c0c9a298
         with:
@@ -15,7 +27,7 @@ jobs:
             const etc = {
               dockerfile:"lego.dockerfile",
               tag:"lego",
-              version:"4.22.2"
+              version:"${{ env.LATEST_VERSION }}"
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
