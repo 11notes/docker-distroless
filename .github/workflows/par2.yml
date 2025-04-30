@@ -1,13 +1,27 @@
 name: tags
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * *"
   push:
     tags:
       - 'par2'
 jobs:
   par2:
     runs-on: ubuntu-latest
-    steps:   
+    steps:
+      - name: cron-update / get latest version
+        run: |
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/animetosho/par2cmdline-turbo/releases/latest | jq -r '.tag_name' | sed 's/v//')
+          echo "LATEST_VERSION=${LATEST_VERSION}" >> "${GITHUB_ENV}"
+          if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/par2-${LATEST_VERSION}; then
+            echo "tag ${LATEST_VERSION} exists already!"
+          else
+            echo "WORKFLOW_AUTO_UPDATE=true" >> "${GITHUB_ENV}"
+          fi
+
       - name: init / base64 nested json
+        if: env.WORKFLOW_AUTO_UPDATE == 'true'
         uses: actions/github-script@62c3794a3eb6788d9a2a72b219504732c0c9a298
         with:
           script: |
@@ -15,11 +29,12 @@ jobs:
             const etc = {
               dockerfile:"par2.dockerfile",
               tag:"par2",
-              version:"1.2.0"
+              version:"${{ env.LATEST_VERSION }}"
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
       - name: build docker image
+        if: env.WORKFLOW_AUTO_UPDATE == 'true'
         uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
         with:
           workflow: docker.yml
