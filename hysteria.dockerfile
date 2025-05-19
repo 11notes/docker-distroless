@@ -24,7 +24,6 @@ ARG APP_GID=1000
       git; \
     git clone https://github.com/apernet/hysteria.git -b app/v${APP_VERSION}; \
     cd ${BUILD_ROOT}; \
-    sed -i -e 's/    if release:/if release:\n        ldflags.append("-extldflags=-static")/' hyperbole.py; \
     python3 hyperbole.py build -r;
 
   RUN set -ex; \
@@ -39,7 +38,7 @@ ARG APP_GID=1000
   ARG APP_ROOT
   ARG APP_UID
   ARG APP_GID
-  COPY --from=distroless --chown=${APP_UID}:${APP_GID} ${APP_ROOT}/ /
+  COPY --from=distroless --chown=${APP_UID}:${APP_GID} / /
   COPY --from=build --chown=${APP_UID}:${APP_GID} ${APP_ROOT}/ /
 
 # :: Start
