@@ -1,4 +1,4 @@
-name: tags
+name: adguard-sync
 on:
   push:
     tags:

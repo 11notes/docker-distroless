@@ -1,4 +1,4 @@
-name: tags
+name: lego
 on:
   workflow_dispatch:
   schedule:

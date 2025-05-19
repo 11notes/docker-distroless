@@ -1,4 +1,4 @@
-name: tags
+name: tini-pm
 on:
   push:
     tags:

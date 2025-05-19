@@ -1,4 +1,4 @@
-name: tags
+name: node
 on:
   push:
     tags:

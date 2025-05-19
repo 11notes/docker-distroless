@@ -1,4 +1,4 @@
-name: tags
+name: cmd-socket
 on:
   push:
     tags:

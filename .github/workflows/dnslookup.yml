@@ -1,4 +1,4 @@
-name: tags
+name: dnslookup
 on:
   workflow_dispatch:
   schedule:

@@ -1,4 +1,4 @@
-name: tags
+name: unrar
 on:
   workflow_dispatch:
   schedule:

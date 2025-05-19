@@ -1,4 +1,4 @@
-name: tags
+name: socket-proxy
 on:
   push:
     tags:

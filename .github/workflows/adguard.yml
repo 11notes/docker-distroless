@@ -1,4 +1,4 @@
-name: tags
+name: adguard
 on:
   push:
     tags:
