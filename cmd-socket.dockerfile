@@ -16,7 +16,9 @@ ARG APP_GID=1000
   COPY --from=util /usr/local/bin/ /usr/local/bin
 
   RUN set -ex; \
-    apk --update --no-cache add \
+    apk --update add \
+      build-base \
+      upx \
       git; \
     git clone https://github.com/11notes/go-cmd-socket.git;
 
