@@ -14,6 +14,8 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 * [11notes/distroless:nginx](https://github.com/11notes/docker-nginx) - nginx
 * [11notes/distroless:traefik](https://github.com/11notes/docker-traefik) - traefik
 * [11notes/distroless:hysteria](https://github.com/11notes/docker-hysteria) - hysteria
+* [11notes/distroless:chrony](https://github.com/11notes/docker-chrony) - chrony
+* [11notes/distroless:netbird](https://github.com/11notes/docker-netbird) - netbird
 
 # CONTAINER ENTRYPOINTS
 * [11notes/distroless:tini-pm](https://github.com/11notes/go-tini-pm) - tini-pm
@@ -24,7 +26,7 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 
 Each tag has sub tags like latest, stable or semver, check the tags available for each binary. If you need more binaries, open a PR or feature request. Some of the images have their own dedicated container images to run the applications within, simply check the link for the source and explanation on how to use them.
 
-These images are meant as direct competition to very popular images which come with almost no security in mind!
+**These images are meant as base layers for your own images!** If you want to use adguard for instance, use [11notes/adguard](https://github.com/11notes/docker-adguard) instead!
 
 ${{ content_build }}
 
