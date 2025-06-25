@@ -4,6 +4,10 @@
   "root":"/distroless",
   "arch":"linux/amd64,linux/arm64,linux/arm/v7",
 
+  "semver":{
+    "version":"latest"
+  },
+
   "readme":{
     "description":"Build your own distroless images with this mini file system and some binaries",
     "parent":{
