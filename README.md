@@ -1,21 +1,9 @@
 ![banner](https://github.com/11notes/defaults/blob/main/static/img/banner.png?raw=true)
 
 # DISTROLESS
-[<img src="https://img.shields.io/badge/github-source-blue?logo=github&color=040308">](https://github.com/11notes/docker-DISTROLESS)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![size](https://img.shields.io/docker/image-size/11notes/distroless/latest?color=0eb305)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![version](https://img.shields.io/docker/v/11notes/distroless/latest?color=eb7a09)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![pulls](https://img.shields.io/docker/pulls/11notes/distroless?color=2b75d6)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)[<img src="https://img.shields.io/github/issues/11notes/docker-DISTROLESS?color=7842f5">](https://github.com/11notes/docker-DISTROLESS/issues)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![swiss_made](https://img.shields.io/badge/Swiss_Made-FFFFFF?labelColor=FF0000&logo=data:image/svg%2bxml;base64,PHN2ZyB2ZXJzaW9uPSIxIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDMyIDMyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im0wIDBoMzJ2MzJoLTMyeiIgZmlsbD0iI2YwMCIvPjxwYXRoIGQ9Im0xMyA2aDZ2N2g3djZoLTd2N2gtNnYtN2gtN3YtNmg3eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==)
+![size](https://img.shields.io/docker/image-size/11notes/distroless/latest?color=0eb305)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![version](https://img.shields.io/docker/v/11notes/distroless/latest?color=eb7a09)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![pulls](https://img.shields.io/docker/pulls/11notes/distroless?color=2b75d6)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)[<img src="https://img.shields.io/github/issues/11notes/docker-DISTROLESS?color=7842f5">](https://github.com/11notes/docker-DISTROLESS/issues)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![swiss_made](https://img.shields.io/badge/Swiss_Made-FFFFFF?labelColor=FF0000&logo=data:image/svg%2bxml;base64,PHN2ZyB2ZXJzaW9uPSIxIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDMyIDMyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0idHJhbnNwYXJlbnQiLz4KICA8cGF0aCBkPSJtMTMgNmg2djdoN3Y2aC03djdoLTZ2LTdoLTd2LTZoN3oiIGZpbGw9IiNmZmYiLz4KPC9zdmc+)
 
 Build your own distroless images with this mini file system and some binaries
-
-# MAIN TAGS 🏷️
-These are the main tags for the image. There is also a tag for each commit and its shorthand sha256 value.
-
-* [latest](https://hub.docker.com/r/11notes/distroless/tags?name=latest)
-
-# REPOSITORIES ☁️
-```
-docker pull 11notes/distroless:latest
-docker pull ghcr.io/11notes/distroless:latest
-docker pull quay.io/11notes/distroless:latest
-```
 
 # SYNOPSIS 📖
 **What can I do with this?** This image and its different layers can be used to build a distroless boiler plate for your application. Simply add the base layer and any additional layers (tags) with the stuff you need to run your application. All binaries are statically compiled and do not depend on any OS libraries or clib. The base layer contains Root CA certificates as well as time zone data and the user configuration for root and docker. Additional layers (tags) with statically compiled binaries are:
@@ -25,33 +13,48 @@ docker pull quay.io/11notes/distroless:latest
 * [11notes/distroless:dnslookup](https://github.com/11notes/docker-distroless/blob/master/dnslookup.dockerfile) - dnslookup
 * [11notes/distroless:lego](https://github.com/11notes/docker-distroless/blob/master/lego.dockerfile) - lego
 * [11notes/distroless:par2](https://github.com/11notes/docker-distroless/blob/master/par2.dockerfile) - par2
+* [11notes/distroless:unrar](https://github.com/11notes/docker-distroless/blob/master/unrar.dockerfile) - unrar
 
-# APPLICATION SUITES
-* [11notes/distroless:node](https://github.com/11notes/docker-node) - node
-* [11notes/distroless:adguard](https://github.com/11notes/docker-adguard) - adguard
-* [11notes/distroless:adguard-sync](https://github.com/11notes/docker-adguard-sync) - adguard-sync
-* [11notes/distroless:nginx](https://github.com/11notes/docker-nginx) - nginx
-* [11notes/distroless:traefik](https://github.com/11notes/docker-traefik) - traefik
-
-# CONTAINER BUILD HELPERS
+# CONTAINER ENTRYPOINTS
 * [11notes/distroless:tini-pm](https://github.com/11notes/go-tini-pm) - tini-pm
+
+# CONTAINER HELPERS
 * [11notes/distroless:cmd-socket](https://github.com/11notes/go-cmd-socket) - cmd-socket
-* [11notes/distroless:socket-proxy](https://github.com/11notes/docker-socket-proxy) - socket-proxy
 
-Each tag has sub tags like latest, stable or semver, check the tags available for each binary. If you need more binaries, open a PR or feature request. Some of the images have their own dedicated container images to run the applications within, simply check the link for the source and explanation on how to use them.
+There are also application services, that are distroless, but don’t serve well as a base layer or only for people who know how to handle them, these are:
 
-These images are meant as direct competition to very popular images which come with almost no security in mind!
+# APPLICATION SERVICES WITH THEIR OWN IMAGES
+* [11notes/socket-proxy](https://github.com/11notes/docker-socket-proxy) - socket-proxy
+* [11notes/node](https://github.com/11notes/docker-node) - node
+* [11notes/adguard](https://github.com/11notes/docker-adguard) - adguard
+* [11notes/adguard-sync](https://github.com/11notes/docker-adguard-sync) - adguard-sync
+* [11notes/nginx](https://github.com/11notes/docker-nginx) - nginx
+* [11notes/traefik](https://github.com/11notes/docker-traefik) - traefik
+* [11notes/hysteria](https://github.com/11notes/docker-hysteria) - hysteria
+* [11notes/chrony](https://github.com/11notes/docker-chrony) - chrony
+* [11notes/netbird](https://github.com/11notes/docker-netbird) - netbird
+* [11notes/pocket-id](https://github.com/11notes/docker-pocket-id) - pocket-id
 
 # BUILD 🚧
 ```yaml
 # this will create a distroless image that just contains the curl binary
-FROM 11notes/distroless AS distroless
 FROM 11notes/distroless:curl AS distroless-curl
 FROM scratch
-COPY --from=distroless --chown=1000:1000 / /
-COPY --from=distroless-curl --chown=1000:1000 / /
+COPY --from=distroless-curl / /
 USER docker
-ENTRYPOINT ["curl"]
+ENTRYPOINT ["/usr/local/bin/curl"]
+```
+
+# MAIN TAGS 🏷️
+These are the main tags for the image. There is also a tag for each commit and its shorthand sha256 value.
+
+* [latest](https://hub.docker.com/r/11notes/distroless/tags?name=latest)
+
+# REGISTRIES ☁️
+```
+docker pull 11notes/distroless:latest
+docker pull ghcr.io/11notes/distroless:latest
+docker pull quay.io/11notes/distroless:latest
 ```
 
 # SOURCE 💾
@@ -60,4 +63,4 @@ ENTRYPOINT ["curl"]
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-distroless/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-distroless/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-distroless/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 29.04.2025, 17:13:50 (CET)*
+*created 25.06.2025, 22:02:54 (CET)*
