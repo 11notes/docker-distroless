@@ -17,12 +17,13 @@
 
   RUN set -ex; \
     apk --update --no-cache add \
+      g++ \
       git \
       cmake \
       samurai;
 
   RUN set -ex; \
-    git clone https://github.com/upx/upx -b v${APP_VERSION};
+    git clone --recurse-submodules https://github.com/upx/upx -b v${APP_VERSION};
 
   RUN set -ex; \
     cd /upx; \
