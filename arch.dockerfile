@@ -1,7 +1,14 @@
-ARG APP_UID=1000
-ARG APP_GID=1000
+# ╔═════════════════════════════════════════════════════╗
+# ║                       SETUP                         ║
+# ╚═════════════════════════════════════════════════════╝
+# GLOBAL
+  ARG APP_UID=1000 \
+      APP_GID=1000
 
-# :: Header
+# ╔═════════════════════════════════════════════════════╗
+# ║                       BUILD                         ║
+# ╚═════════════════════════════════════════════════════╝
+# :: Root CA, timezone and default users
   FROM alpine AS distroless
   ARG TARGETARCH
   ARG APP_ROOT
@@ -11,7 +18,8 @@ ARG APP_GID=1000
 # :: create base folders
   RUN set -ex; \
     mkdir -p ${APP_ROOT}/etc; \
-    mkdir -p ${APP_ROOT}/run;
+    mkdir -p ${APP_ROOT}/run; \
+    mkdir -p ${APP_ROOT}/tmp;
 
 # :: create users
   RUN set -ex; \
@@ -22,9 +30,8 @@ ARG APP_GID=1000
 
 # :: add ca-certificates
   RUN set -ex; \
-    apk --update --no-cache add \
-      ca-certificates \
-      tzdata; \
+    apk --no-cache --update --repository https://dl-cdn.alpinelinux.org/alpine/edge/main add \
+      ca-certificates; \
     mkdir -p ${APP_ROOT}/usr/share/ca-certificates; \
     mkdir -p ${APP_ROOT}/etc/ssl/certs; \
     cp -R /usr/share/ca-certificates/* ${APP_ROOT}/usr/share/ca-certificates; \
@@ -32,18 +39,32 @@ ARG APP_GID=1000
 
 # :: add timezones
   RUN set -ex; \
-    apk --update --no-cache add \
+    apk --no-cache --update --repository https://dl-cdn.alpinelinux.org/alpine/edge/main add \
       tzdata; \
     mkdir -p ${APP_ROOT}/usr/share/zoneinfo; \
     cp -R /usr/share/zoneinfo/* ${APP_ROOT}/usr/share/zoneinfo;
 
-# :: Distroless
+# ╔═════════════════════════════════════════════════════╗
+# ║                       IMAGE                         ║
+# ╚═════════════════════════════════════════════════════╝
+# :: HEADER
   FROM scratch
-  ARG APP_ROOT
-  ARG APP_UID
-  ARG APP_GID
-  COPY --from=distroless --chown=${APP_UID}:${APP_GID} ${APP_ROOT}/ /
 
-# :: Start
+  # :: default arguments
+    ARG TARGETPLATFORM \
+        TARGETOS \
+        TARGETARCH \
+        TARGETVARIANT \
+        APP_IMAGE \
+        APP_NAME \
+        APP_VERSION \
+        APP_ROOT \
+        APP_UID \
+        APP_GID \
+        APP_NO_CACHE
+
+  COPY --from=distroless ${APP_ROOT}/ /
+
+# :: EXECUTE
   USER ${APP_UID}:${APP_GID}
   ENTRYPOINT ["/"]
