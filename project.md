@@ -13,7 +13,9 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 # CONTAINER HELPERS
 * [11notes/distroless:cmd-socket](https://github.com/11notes/go-cmd-socket) - cmd-socket
 
-# APPLICATION SERVICES
+There are also application services, that are distroless, but don’t serve well as a base layer or only for people who know how to handle them, these are:
+
+# APPLICATION SERVICES WITH THEIR OWN IMAGES
 * [11notes/socket-proxy](https://github.com/11notes/docker-socket-proxy) - socket-proxy
 * [11notes/node](https://github.com/11notes/docker-node) - node
 * [11notes/adguard](https://github.com/11notes/docker-adguard) - adguard
@@ -24,10 +26,6 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 * [11notes/chrony](https://github.com/11notes/docker-chrony) - chrony
 * [11notes/netbird](https://github.com/11notes/docker-netbird) - netbird
 * [11notes/pocket-id](https://github.com/11notes/docker-pocket-id) - pocket-id
-
-Each tag has sub tags like latest, stable or semver, check the tags available for each binary. If you need more binaries, open a PR or feature request. Some of the images have their own dedicated container images to run the applications within, simply check the link for the source and explanation on how to use them.
-
-**These images are meant as base layers for your own images!** If you want to use adguard for instance, use [11notes/adguard](https://github.com/11notes/docker-adguard) instead!
 
 ${{ content_build }}
 
