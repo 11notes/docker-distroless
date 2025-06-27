@@ -31,7 +31,7 @@
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
-    /configure \
+    ./configure \
       --disable-nls \
       --prefix="${PWD}/dist"; \
     make configure-host; \
