@@ -14,7 +14,7 @@
       APP_ROOT \
       APP_VERSION
   ARG BUILD_ROOT=/file-${APP_VERSION}
-  ARG BUILD_BIN=${BUILD_ROOT}/dist/file
+  ARG BUILD_BIN=${BUILD_ROOT}/dist/bin/file
   USER root
 
   RUN set -ex; \
