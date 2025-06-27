@@ -1,27 +1,26 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                       SETUP                         ║
 # ╚═════════════════════════════════════════════════════╝
-  # GLOBAL
+# GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000
-
-  # :: FOREIGN IMAGES
-  FROM 11notes/distroless:upx AS distroless-upx
-
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
-  # :: upx
+# :: file
   FROM alpine AS distroless
-  COPY --from=distroless-upx / /
   ARG TARGETARCH \
       APP_ROOT \
       APP_VERSION
+  ARG BUILD_ROOT=/binutils-${APP_VERSION}
+  ARG BUILD_BIN=${BUILD_ROOT}/dist/bin/strip
   USER root
 
   RUN set -ex; \
     apk --update --no-cache add \
+      binutils \
+      upx \
       xz \
       g++ \
       make \
@@ -31,26 +30,30 @@
     curl -SL https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.xz | tar -xJC /;
 
   RUN set -ex; \
-    cd /binutils-${APP_VERSION}; \
-    ./configure \
+    cd ${BUILD_ROOT}; \
+    /configure \
       --disable-nls \
       --prefix="${PWD}/dist"; \
     make configure-host; \
-    make LDFLAGS="-all-static"; \
-    make install; \
+    make -s -j $(nproc) LDFLAGS="-all-static"; \
+    make install;
+
+  RUN set -ex; \
+    strip -v ${BUILD_BIN}; \
+    upx -q -9 ${BUILD_BIN};
+
+  RUN set -ex; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
-    /binutils-${APP_VERSION}/dist/bin/strip -v /binutils-${APP_VERSION}/dist/bin/strip; \
-    /usr/local/bin/upx -q -9 /binutils-${APP_VERSION}/dist/bin/strip; \
-    /binutils-${APP_VERSION}/dist/bin/strip --version; \
-    cp /binutils-${APP_VERSION}/dist/bin/strip ${APP_ROOT}/usr/local/bin;
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
+
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
 # ╚═════════════════════════════════════════════════════╝
 # :: HEADER
-FROM scratch
+  FROM alpine
 
-  # :: default arguments
+# :: default arguments
   ARG TARGETPLATFORM \
       TARGETOS \
       TARGETARCH \
@@ -65,6 +68,7 @@ FROM scratch
 
   COPY --from=distroless ${APP_ROOT}/ /
 
-  # :: EXECUTE
+# :: EXECUTE
 USER ${APP_UID}:${APP_GID}
 ENTRYPOINT ["/usr/local/bin/strip"]
+CMD ["--version"]
