@@ -19,6 +19,8 @@
 
   RUN set -ex; \
     apk --update --no-cache add \
+      gpg \
+      gpg-agent \
       binutils \
       upx \
       libmagic-static \
@@ -26,11 +28,17 @@
       file-doc \
       make \
       g++ \
-      curl \
+      wget \
       tar;
 
   RUN set -ex; \
-    curl -SL https://astron.com/pub/file/file-${APP_VERSION}.tar.gz | tar -zxC /;
+    gpg --keyserver hkp://keys.gnupg.net --recv-keys BE04995BA8F90ED0C0C176C471112AB16CB33B3A;
+
+  RUN set -ex; \
+    wget https://astron.com/pub/file/file-${APP_VERSION}.tar.gz; \
+    wget https://astron.com/pub/file/file-${APP_VERSION}.tar.gz.asc; \
+    gpg --verify file-${APP_VERSION}.tar.gz.asc file-${APP_VERSION}.tar.gz || exit 1; \
+    tar xf file-${APP_VERSION}.tar.gz;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \

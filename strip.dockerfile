@@ -19,15 +19,23 @@
 
   RUN set -ex; \
     apk --update --no-cache add \
+      gpg \
+      gpg-agent \
       binutils \
       upx \
       xz \
       g++ \
       make \
-      curl;
+      wget;
 
   RUN set -ex; \
-    curl -SL https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.xz | tar -xJC /;
+    gpg --keyserver keys.gnupg.net --recv-keys 13FCEF89DD9E3C4F;
+
+  RUN set -ex; \
+    wget https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.xz; \
+    wget https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.xz.sig; \
+    gpg --verify binutils-${APP_VERSION}.tar.xz.sig binutils-${APP_VERSION}.tar.xz || exit 1; \
+    tar xf binutils-${APP_VERSION}.tar.xz;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
