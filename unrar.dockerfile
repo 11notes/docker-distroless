@@ -18,16 +18,10 @@ ARG APP_GID=1000
 # :: Build
   RUN set -ex; \
     apk --update --no-cache add \
-      build-base \
-      gcc \
-      clang \
       g++ \
       make \
-      cmake \
-      git \
       wget \
-      tar \
-      xz;
+      tar;
 
   RUN set -ex; \
     wget https://www.rarlab.com/rar/${BUILD_SRC}; \
@@ -54,3 +48,4 @@ ARG APP_GID=1000
 # :: Start
   USER ${APP_UID}:${APP_GID}
   ENTRYPOINT ["/usr/local/bin/unrar"]
+  CMD ["--version"]
