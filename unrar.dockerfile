@@ -9,6 +9,7 @@ ARG APP_GID=1000
   ARG TARGETARCH
   ARG APP_ROOT
   ARG APP_VERSION
+  ENV BUILD_SRC=unrarsrc-${APP_VERSION}.tar.gz
   ENV BUILD_ROOT=/unrar
   ENV BUILD_BIN=${BUILD_ROOT}/unrar
   USER root
@@ -24,12 +25,14 @@ ARG APP_GID=1000
       make \
       cmake \
       git \
-      curl \
+      wget \
       tar \
       xz;
 
   RUN set -ex; \
-    curl -SL https://www.rarlab.com/rar/unrarsrc-${APP_VERSION}.tar.gz | tar -zxC /;
+    wget https://www.rarlab.com/rar/${BUILD_SRC}; \
+    echo "9ec7765a948140758af12ed29e3e47db425df79a9c5cbb71b28769b256a7a014 ${BUILD_SRC}" | sha256sum -c || exit 1; \
+    tar xf ${BUILD_SRC};
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
