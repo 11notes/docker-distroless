@@ -36,7 +36,9 @@
 
   RUN set -ex; \
     wget https://astron.com/pub/file/file-${APP_VERSION}.tar.gz; \
-    wget https://astron.com/pub/file/file-${APP_VERSION}.tar.gz.asc; \
+    wget https://astron.com/pub/file/file-${APP_VERSION}.tar.gz.asc;
+
+  RUN set -ex; \
     gpg --verify file-${APP_VERSION}.tar.gz.asc file-${APP_VERSION}.tar.gz || exit 1; \
     tar xf file-${APP_VERSION}.tar.gz;
 

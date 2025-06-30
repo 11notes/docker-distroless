@@ -33,9 +33,11 @@
 
   RUN set -ex; \
     wget https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.xz; \
-    wget https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.xz.sig; \
+    wget https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.xz.sig;
+
+  RUN set -ex; \
     gpg --verify binutils-${APP_VERSION}.tar.xz.sig binutils-${APP_VERSION}.tar.xz || exit 1; \
-    tar xf binutils-${APP_VERSION}.tar.xz;
+    tar xfJ binutils-${APP_VERSION}.tar.xz;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
