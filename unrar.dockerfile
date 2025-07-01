@@ -81,4 +81,3 @@
 # :: EXECUTE
 USER ${APP_UID}:${APP_GID}
 ENTRYPOINT ["/usr/local/bin/unrar"]
-CMD ["--version"]
