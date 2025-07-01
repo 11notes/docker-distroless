@@ -14,7 +14,7 @@
       APP_ROOT \
       APP_VERSION
   ARG BUILD_ROOT=/pv-${APP_VERSION}
-  ARG BUILD_BIN=${BUILD_ROOT}/pv \
+  ARG BUILD_BIN=${BUILD_ROOT}/dist/bin/pv \
       BUILD_SRC=pv-${APP_VERSION}.tar.gz
   COPY ./src/pv /
   USER root
@@ -52,8 +52,12 @@
     cd ${BUILD_ROOT}; \
     CFLAGS="$CFLAGS -flto=auto" \
     ./configure \
-      --disable-nls; \
-    make -s -j $(nproc) LDFLAGS="--static";
+      --prefix="${BUILD_ROOT}/dist" \
+      --disable-nls \
+      --disable-shared \
+      --enable-static; \
+    make -s -j $(nproc) LDFLAGS="--static"; \
+    make install;
 
   RUN set -ex; \
     file ${BUILD_BIN} | grep -q "statically linked" || exit 1; \

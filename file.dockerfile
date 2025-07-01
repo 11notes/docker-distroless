@@ -14,33 +14,41 @@
       APP_ROOT \
       APP_VERSION
   ARG BUILD_ROOT=/file-${APP_VERSION}
-  ARG BUILD_BIN=${BUILD_ROOT}/dist/bin/file
+  ARG BUILD_BIN=${BUILD_ROOT}/dist/bin/file \
+      BUILD_SRC=file-${APP_VERSION}.tar.gz
   USER root
 
   RUN set -ex; \
     apk --update --no-cache add \
-      gpg \
-      gpg-agent \
+      file \
       binutils \
       upx \
+      pv \
+      tar \
+      wget \
+      curl \
+      xz \
+      gpg \
+      gpg-agent;
+
+  RUN set -ex; \
+    apk --update --no-cache add \
       libmagic-static \
       file-dev \
       file-doc \
       make \
-      g++ \
-      wget \
-      tar;
+      g++;
 
   RUN set -ex; \
     gpg --keyserver hkp://keys.gnupg.net --recv-keys BE04995BA8F90ED0C0C176C471112AB16CB33B3A;
 
   RUN set -ex; \
-    wget https://astron.com/pub/file/file-${APP_VERSION}.tar.gz; \
-    wget https://astron.com/pub/file/file-${APP_VERSION}.tar.gz.asc;
+    wget https://astron.com/pub/file/${BUILD_SRC}; \
+    wget https://astron.com/pub/file/${BUILD_SRC}.asc;
 
   RUN set -ex; \
-    gpg --verify file-${APP_VERSION}.tar.gz.asc file-${APP_VERSION}.tar.gz || exit 1; \
-    tar xf file-${APP_VERSION}.tar.gz;
+    gpg --verify ${BUILD_SRC}.asc ${BUILD_SRC} || exit 1; \
+    pv ${BUILD_SRC} | tar xz;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
@@ -52,6 +60,7 @@
     make install;
 
   RUN set -ex; \
+    file ${BUILD_BIN} | grep -q "statically linked" || exit 1; \
     strip -v ${BUILD_BIN}; \
     upx -q -9 ${BUILD_BIN};
 
