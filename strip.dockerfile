@@ -36,7 +36,7 @@
 
   RUN set -ex; \
     gpg --verify binutils-${APP_VERSION}.tar.gz.sig binutils-${APP_VERSION}.tar.gz || exit 1; \
-    tar xf binutils-${APP_VERSION}.tar.gz;
+    tar xvf binutils-${APP_VERSION}.tar.gz;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
