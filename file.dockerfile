@@ -14,13 +14,12 @@
       APP_ROOT \
       APP_VERSION
   ARG BUILD_ROOT=/file-${APP_VERSION}
-  ARG BUILD_BIN=${BUILD_ROOT}/dist/bin/file \
+  ARG BUILD_BIN=/usr/local/bin/file \
       BUILD_SRC=file-${APP_VERSION}.tar.gz
   USER root
 
   RUN set -ex; \
     apk --update --no-cache add \
-      file \
       binutils \
       upx \
       pv \
@@ -53,20 +52,22 @@
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
     ./configure \
-      --prefix="${BUILD_ROOT}/dist" \
+      --prefix="/usr/local" \
       --disable-shared \
       --enable-static; \
     make -s -j $(nproc) LDFLAGS="-all-static"; \
     make install;
 
   RUN set -ex; \
-    file ${BUILD_BIN} | grep -q "statically linked" || exit 1; \
+    ${BUILD_BIN} ${BUILD_BIN} | grep -q "statically linked" || exit 1; \
     strip -v ${BUILD_BIN}; \
     upx -q -9 ${BUILD_BIN};
 
   RUN set -ex; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
-    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
+    mkdir -p ${APP_ROOT}/usr/local/share/misc; \
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin; \
+    cp /usr/local/share/misc/magic.mgc ${APP_ROOT}/usr/local/share/misc;
 
 
 # ╔═════════════════════════════════════════════════════╗
