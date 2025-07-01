@@ -10,10 +10,24 @@
 # ╚═════════════════════════════════════════════════════╝
 # :: upx
   FROM alpine AS distroless
-  ARG TARGETARCH
-  ARG APP_ROOT
-  ARG APP_VERSION
-  USER root
+  ARG TARGETARCH \
+      APP_ROOT \
+      APP_VERSION
+  ARG BUILD_ROOT=/upx
+  ARG BUILD_BIN=${BUILD_ROOT}/build/upx
+
+  RUN set -ex; \
+    apk --update --no-cache add \
+      file \
+      binutils \
+      upx \
+      pv \
+      tar \
+      wget \
+      curl \
+      xz \
+      gpg \
+      gpg-agent;
 
   RUN set -ex; \
     apk --update --no-cache add \
@@ -26,7 +40,7 @@
     git clone --recurse-submodules https://github.com/upx/upx.git -b v${APP_VERSION};
 
   RUN set -ex; \
-    cd /upx; \
+    cd ${BUILD_ROOT}; \
     cmake -B build -G Ninja \
       -DCMAKE_INSTALL_PREFIX=/usr \
       -DCMAKE_BUILD_TYPE=Release \
@@ -36,11 +50,16 @@
       -DBUILD_SHARED_LIBS=OFF \
       -DCMAKE_FIND_LIBRARY_SUFFIXES=".a" \
       -DUPX_CONFIG_DISABLE_GITREV=ON; \
-    cmake --build build; \
-    /upx/build/upx -q /upx/build/upx; \
-    /upx/build/upx --version; \
+    cmake --build build;
+
+  RUN set -ex; \
+    file ${BUILD_BIN} | grep -q "statically linked" || exit 1; \
+    strip -v ${BUILD_BIN}; \
+    upx -q -9 ${BUILD_BIN};
+
+  RUN set -ex; \
     mkdir -p ${APP_ROOT}/usr/local/bin; \
-    cp /upx/build/upx ${APP_ROOT}/usr/local/bin;
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
@@ -66,3 +85,4 @@
 # :: EXECUTE
 USER ${APP_UID}:${APP_GID}
 ENTRYPOINT ["/usr/local/bin/upx"]
+CMD ["--version"]
