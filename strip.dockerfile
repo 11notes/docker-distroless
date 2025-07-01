@@ -23,7 +23,6 @@
       gpg-agent \
       binutils \
       upx \
-      xz \
       g++ \
       make \
       wget;
@@ -32,12 +31,12 @@
     gpg --keyserver keys.gnupg.net --recv-keys 13FCEF89DD9E3C4F;
 
   RUN set -ex; \
-    wget https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.xz; \
-    wget https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.xz.sig;
+    wget https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.gz; \
+    wget https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.gz.sig;
 
   RUN set -ex; \
-    gpg --verify binutils-${APP_VERSION}.tar.xz.sig binutils-${APP_VERSION}.tar.xz || exit 1; \
-    tar xfJ binutils-${APP_VERSION}.tar.xz;
+    gpg --verify binutils-${APP_VERSION}.tar.gz.sig binutils-${APP_VERSION}.tar.gz || exit 1; \
+    tar xf binutils-${APP_VERSION}.tar.gz;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
