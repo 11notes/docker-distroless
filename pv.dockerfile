@@ -14,7 +14,8 @@
       APP_ROOT \
       APP_VERSION
   ARG BUILD_ROOT=/pv-${APP_VERSION}
-  ARG BUILD_BIN=${BUILD_ROOT}/pv
+  ARG BUILD_BIN=${BUILD_ROOT}/pv \
+      BUILD_SRC=pv-${APP_VERSION}.tar.gz
   COPY ./src/pv /
   USER root
 
@@ -40,12 +41,12 @@
     gpg --import /key.txt;
 
   RUN set -ex; \
-    wget http://ivarch.com/s/pv-${APP_VERSION}.tar.gz; \
-    wget http://ivarch.com/s/pv-${APP_VERSION}.tar.gz.txt;
+    wget http://ivarch.com/s/${BUILD_SRC}; \
+    wget http://ivarch.com/s/${BUILD_SRC}.txt;
 
   RUN set -ex; \
-    gpg --verify pv-${APP_VERSION}.tar.gz.txt pv-${APP_VERSION}.tar.gz || exit 1; \
-    pv binutils-${APP_VERSION}.tar.gz | tar xz;
+    gpg --verify ${BUILD_SRC}.txt ${BUILD_SRC} || exit 1; \
+    pv ${BUILD_SRC} | tar xz;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
