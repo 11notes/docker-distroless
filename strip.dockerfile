@@ -21,6 +21,7 @@
     apk --update --no-cache add \
       gpg \
       gpg-agent \
+      pv \
       binutils \
       upx \
       g++ \
@@ -36,7 +37,7 @@
 
   RUN set -ex; \
     gpg --verify binutils-${APP_VERSION}.tar.gz.sig binutils-${APP_VERSION}.tar.gz || exit 1; \
-    tar xvf binutils-${APP_VERSION}.tar.gz;
+    pv binutils-${APP_VERSION}.tar.gz | tar xz;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
