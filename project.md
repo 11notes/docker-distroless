@@ -5,7 +5,11 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 * [11notes/distroless:dnslookup](https://github.com/11notes/docker-distroless/blob/master/dnslookup.dockerfile) - dnslookup
 * [11notes/distroless:lego](https://github.com/11notes/docker-distroless/blob/master/lego.dockerfile) - lego
 * [11notes/distroless:par2](https://github.com/11notes/docker-distroless/blob/master/par2.dockerfile) - par2
-* [11notes/distroless:unrar](https://github.com/11notes/docker-distroless/blob/master/unrar.dockerfile) - unrar
+* [11notes/distroless:unrar](https://github.com/11notes/docker-distroless/blob/master/unrar.dockerfile) - unrar (freeware!)
+* [11notes/distroless:file](https://github.com/11notes/docker-distroless/blob/master/file.dockerfile) - file
+* [11notes/distroless:strip](https://github.com/11notes/docker-distroless/blob/master/strip.dockerfile) - strip
+* [11notes/distroless:upx](https://github.com/11notes/docker-distroless/blob/master/upx.dockerfile) - upx
+* [11notes/distroless:pv](https://github.com/11notes/docker-distroless/blob/master/pv.dockerfile) - pv
 
 # CONTAINER ENTRYPOINTS
 * [11notes/distroless:tini-pm](https://github.com/11notes/go-tini-pm) - tini-pm
