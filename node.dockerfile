@@ -51,7 +51,6 @@
     make -s -j $(nproc);
 
   RUN set -ex; \
-    mv ${BUILD_DIR}/out/Release ${BUILD_DIR}/out/release; \
     eleven distroless ${BUILD_BIN};
 
 # ╔═════════════════════════════════════════════════════╗
