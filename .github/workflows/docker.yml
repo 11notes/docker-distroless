@@ -101,7 +101,7 @@ jobs:
             const docker = {
               image:{
                 name:opt.dot.image,
-                arch:(opt.dot.arch || 'linux/amd64,linux/arm64'),
+                arch:(opt.input?.etc?.arch || opt.dot?.arch || 'linux/amd64,linux/arm64'),
                 prefix:((opt.input?.etc?.semverprefix) ? `${opt.input?.etc?.semverprefix}-` : ''),
                 suffix:((opt.input?.etc?.semversuffix) ? `-${opt.input?.etc?.semversuffix}` : ''),
                 description:(opt.dot?.readme?.description || ''),
