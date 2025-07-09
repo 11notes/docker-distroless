@@ -4,6 +4,7 @@
   # GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
+      BUILD_SRC=https://github.com/go-acme/lego.git \
       BUILD_ROOT=/go/lego
   ARG BUILD_BIN=${BUILD_ROOT}/dist/lego
 
@@ -18,7 +19,7 @@
   FROM golang:1.24-alpine AS build
   COPY --from=util-bin / /
   ARG APP_VERSION \
-      APP_IMAGE \
+      BUILD_SRC \
       BUILD_ROOT \
       BUILD_BIN \
       TARGETARCH \
@@ -29,7 +30,7 @@
   RUN set -ex; \
     apk --update --no-cache add \
       git; \
-    git clone https://github.com/go-acme/lego.git -b v${APP_VERSION};
+    git clone ${BUILD_SRC} -b v${APP_VERSION};
 
   RUN set -ex; \
     # fix CVE's
