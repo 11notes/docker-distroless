@@ -35,7 +35,7 @@ jobs:
               dockerfile:"node.dockerfile",
               tag:"node",
               version:"${{ env.LATEST_VERSION }}",
-              arch:"'linux/amd64,linux/arm64'",
+              arch:"linux/amd64,linux/arm64",
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
@@ -76,7 +76,7 @@ jobs:
               tag:"node",
               semversuffix:"stable"
               version:"${{ env.STABLE_VERSION }}",
-              arch:"'linux/amd64,linux/arm64'",
+              arch:"linux/amd64,linux/arm64",
             };
             core.exportVariable('WORKFLOW_BASE64JSON_STABLE', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
