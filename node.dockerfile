@@ -47,7 +47,10 @@
 
   RUN set -ex; \
     cd ${BUILD_DIR}; \
-    ./configure --fully-static --enable-static; \
+    ./configure --fully-static --enable-static;
+
+  RUN set -ex; \
+    cd ${BUILD_DIR}; \
     make -s -j $(nproc);
 
   RUN set -ex; \
