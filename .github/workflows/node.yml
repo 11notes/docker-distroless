@@ -46,7 +46,7 @@ jobs:
           wait-for-completion-timeout: "10h"
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"false", "run-name":"node", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
+          inputs: '{ "runs-on":"self-hosted", "release":"false", "readme":"false", "run-name":"node", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
 
 
 
@@ -87,4 +87,4 @@ jobs:
           wait-for-completion-timeout: "10h"
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"false", "run-name":"node-stable", "etc":"${{ env.WORKFLOW_BASE64JSON_STABLE }}" }'
+          inputs: '{ "runs-on":"self-hosted", "release":"false", "readme":"false", "run-name":"node-stable", "etc":"${{ env.WORKFLOW_BASE64JSON_STABLE }}" }'
