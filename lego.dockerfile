@@ -9,27 +9,20 @@
   ARG BUILD_BIN=${BUILD_ROOT}/dist/lego
 
   # :: FOREIGN IMAGES
-  FROM 11notes/util:bin AS util-bin
   FROM 11notes/distroless AS distroless
+
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
 # :: LEGO
-  FROM golang:1.24-alpine AS build
-  COPY --from=util-bin / /
+  FROM 11notes/go:1.24 AS build
   ARG APP_VERSION \
       BUILD_SRC \
       BUILD_ROOT \
-      BUILD_BIN \
-      TARGETARCH \
-      TARGETPLATFORM \
-      TARGETVARIANT \
-      CGO_ENABLED=0
+      BUILD_BIN
 
   RUN set -ex; \
-    apk --update --no-cache add \
-      git; \
     git clone ${BUILD_SRC} -b v${APP_VERSION};
 
   RUN set -ex; \
@@ -48,6 +41,7 @@
   RUN set -ex; \
     eleven distroless ${BUILD_BIN};
 
+    
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
 # ╚═════════════════════════════════════════════════════╝
@@ -75,9 +69,9 @@
 
   # :: multi-stage
     COPY --from=distroless / /
-    COPY --from=build /distroless/ /
+    COPY --from=build ${APP_ROOT}/ /
 
-# :: Start
+# :: EXECUTE
   USER ${APP_UID}:${APP_GID}
   ENTRYPOINT ["/usr/local/bin/lego"]
   CMD ["--version"]

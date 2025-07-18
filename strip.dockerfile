@@ -1,21 +1,33 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                       SETUP                         ║
 # ╚═════════════════════════════════════════════════════╝
-# GLOBAL
+  # GLOBAL
   ARG APP_UID=1000 \
-      APP_GID=1000
+      APP_GID=1000 \
+      APP_VERSION=2.44
+  ARG BUILD_ROOT=/binutils-${APP_VERSION} \
+      BUILD_TAR=binutils-${APP_VERSION}.tar.gz
+  ARG BUILD_BIN=${BUILD_ROOT}/dist/bin/strip \
+      BUILD_SRC=https://ftp.gnu.org/gnu/binutils/${BUILD_TAR} \
+      GPG_KEY=13FCEF89DD9E3C4F
+
+  # :: FOREIGN IMAGES
+  FROM 11notes/util:bin AS util-bin
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
-# :: strip
-  FROM alpine AS distroless
-  ARG TARGETARCH \
+# :: STRIP
+  FROM alpine AS build
+  COPY --from=util-bin / /
+  COPY ./src/pv /
+  ARG APP_VERSION \
       APP_ROOT \
-      APP_VERSION
-  ARG BUILD_ROOT=/binutils-${APP_VERSION}
-  ARG BUILD_BIN=${BUILD_ROOT}/dist/bin/strip
-  USER root
+      BUILD_SRC \
+      BUILD_ROOT \
+      BUILD_BIN \
+      BUILD_TAR \
+      GPG_KEY
 
   RUN set -ex; \
     apk --update --no-cache add \
@@ -29,15 +41,15 @@
       wget;
 
   RUN set -ex; \
-    gpg --keyserver keys.gnupg.net --recv-keys 13FCEF89DD9E3C4F;
+    gpg --keyserver keys.gnupg.net --recv-keys ${GPG_KEY};
 
   RUN set -ex; \
-    wget https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.gz; \
-    wget https://ftp.gnu.org/gnu/binutils/binutils-${APP_VERSION}.tar.gz.sig;
+    wget -q --show-progress --progress=bar:force ${BUILD_SRC}; \
+    wget -q --show-progress --progress=bar:force ${BUILD_SRC}.sig;
 
   RUN set -ex; \
-    gpg --verify binutils-${APP_VERSION}.tar.gz.sig binutils-${APP_VERSION}.tar.gz || exit 1; \
-    pv binutils-${APP_VERSION}.tar.gz | tar xz;
+    gpg --verify ${BUILD_TAR}.sig ${BUILD_TAR}; \
+    pv ${BUILD_TAR} | tar xz;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
@@ -45,40 +57,42 @@
       --disable-nls \
       --prefix="${PWD}/dist"; \
     make configure-host; \
-    make -s -j $(nproc) LDFLAGS="-all-static"; \
+    make -s -j $(nproc) LDFLAGS="-all-static" 2>&1 > /dev/null; \
     make install;
 
   RUN set -ex; \
-    strip -v ${BUILD_BIN}; \
-    upx -q -9 ${BUILD_BIN};
-
-  RUN set -ex; \
-    mkdir -p ${APP_ROOT}/usr/local/bin; \
-    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
+    eleven distroless ${BUILD_BIN};
 
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
 # ╚═════════════════════════════════════════════════════╝
-# :: HEADER
+  # :: HEADER
   FROM scratch
 
-# :: default arguments
-  ARG TARGETPLATFORM \
-      TARGETOS \
-      TARGETARCH \
-      TARGETVARIANT \
-      APP_IMAGE \
-      APP_NAME \
-      APP_VERSION \
-      APP_ROOT \
-      APP_UID \
-      APP_GID \
-      APP_NO_CACHE
+  # :: default arguments
+    ARG TARGETPLATFORM \
+        TARGETOS \
+        TARGETARCH \
+        TARGETVARIANT \
+        APP_IMAGE \
+        APP_NAME \
+        APP_VERSION \
+        APP_ROOT \
+        APP_UID \
+        APP_GID \
+        APP_NO_CACHE
 
-  COPY --from=distroless ${APP_ROOT}/ /
+  # :: default environment
+    ENV APP_IMAGE=${APP_IMAGE} \
+        APP_NAME=${APP_NAME} \
+        APP_VERSION=${APP_VERSION} \
+        APP_ROOT=${APP_ROOT}
+
+  # :: multi-stage
+    COPY --from=build ${APP_ROOT}/ /
 
 # :: EXECUTE
-USER ${APP_UID}:${APP_GID}
-ENTRYPOINT ["/usr/local/bin/strip"]
-CMD ["--version"]
+  USER ${APP_UID}:${APP_GID}
+  ENTRYPOINT ["/usr/local/bin/strip"]
+  CMD ["--version"]

@@ -1,50 +1,62 @@
-ARG APP_UID=1000
-ARG APP_GID=1000
+# ╔═════════════════════════════════════════════════════╗
+# ║                       SETUP                         ║
+# ╚═════════════════════════════════════════════════════╝
+  # GLOBAL
+  ARG APP_UID=1000 \
+      APP_GID=1000 \
+      BUILD_SRC=https://github.com/11notes/go-cmd-socket.git \
+      BUILD_ROOT=/go/go-cmd-socket
+  ARG BUILD_BIN=${BUILD_ROOT}/cmd-socket
 
-# :: Util
-  FROM 11notes/util AS util
-
-# :: Header
-  FROM golang:1.24-alpine AS build
-  ARG APP_ROOT
-  ARG APP_NO_CACHE
-  ENV BUILD_ROOT=/go/go-cmd-socket
-  ENV BUILD_BIN=${BUILD_ROOT}/cmd-socket
-  ENV CGO_ENABLED=0
-  USER root
-
-  COPY --from=util /usr/local/bin/ /usr/local/bin
-
-  RUN set -ex; \
-    apk --update add \
-      build-base \
-      upx \
-      git; \
-    git clone https://github.com/11notes/go-cmd-socket.git;
+  
+# ╔═════════════════════════════════════════════════════╗
+# ║                       BUILD                         ║
+# ╚═════════════════════════════════════════════════════╝
+  # :: CMD-SOCKET
+  FROM 11notes/go:1.24 AS build
+  ARG APP_VERSION \
+      BUILD_SRC \
+      BUILD_ROOT \
+      BUILD_BIN
 
   RUN set -ex; \
-    eleven printenv;
+    git clone ${BUILD_SRC};
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
-    mkdir -p ${APP_ROOT}/usr/local/bin; \
     mkdir -p ${APP_ROOT}/run/cmd; \
-    go mod tidy; \
-    go build -ldflags="-extldflags=-static" -o ${BUILD_BIN} main.go;
+    eleven go build ${BUILD_BIN} main.go; \
+    eleven distroless ${BUILD_BIN};
 
-  RUN set -ex; \
-    eleven checkStatic ${BUILD_BIN}; \
-    eleven strip ${BUILD_BIN}; \
-    mkdir -p ${APP_ROOT}/usr/local/bin; \
-    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
-# :: Distroless
+# ╔═════════════════════════════════════════════════════╗
+# ║                       IMAGE                         ║
+# ╚═════════════════════════════════════════════════════╝
+  # :: HEADER
   FROM scratch
-  ARG APP_ROOT
-  ARG APP_UID
-  ARG APP_GID
-  COPY --from=build --chown=${APP_UID}:${APP_GID} ${APP_ROOT}/ /
 
-# :: Start
+  # :: default arguments
+    ARG TARGETPLATFORM \
+        TARGETOS \
+        TARGETARCH \
+        TARGETVARIANT \
+        APP_IMAGE \
+        APP_NAME \
+        APP_VERSION \
+        APP_ROOT \
+        APP_UID \
+        APP_GID \
+        APP_NO_CACHE
+
+  # :: default environment
+    ENV APP_IMAGE=${APP_IMAGE} \
+        APP_NAME=${APP_NAME} \
+        APP_VERSION=${APP_VERSION} \
+        APP_ROOT=${APP_ROOT}
+
+  # :: multi-stage
+    COPY --from=build ${APP_ROOT}/ /
+
+# :: EXECUTE
   USER ${APP_UID}:${APP_GID}
   ENTRYPOINT ["/usr/local/bin/cmd-socket"]
