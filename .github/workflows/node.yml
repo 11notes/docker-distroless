@@ -13,7 +13,6 @@ jobs:
       - name: cron-update / get latest version
         run: |
           LATEST_VERSION=$(curl -s https://api.github.com/repos/nodejs/node/releases/latest | jq -r '.tag_name' | sed 's/v//')
-          
           if [ "${LATEST_VERSION}" != "null" ]; then
             if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/node-${LATEST_VERSION}; then
               echo "tag ${LATEST_VERSION} exists already!"
@@ -53,7 +52,6 @@ jobs:
       - name: cron-update / get stable version
         run: |
           STABLE_VERSION=$(curl -sSL https://nodejs.org/en/download | grep -oE 'v[0-9]+.[0-9]+.[0-9]+ \(LTS\)' | sed -E 's/v(\d+.\d+.\d+) \(LTS\)/\1/')
-          
           if [ "${STABLE_VERSION}" != "null" ]; then
             if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/node-${STABLE_VERSION}-stable; then
               echo "tag ${STABLE_VERSION} exists already!"

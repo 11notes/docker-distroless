@@ -12,8 +12,7 @@ jobs:
     steps:
       - name: cron-update / get latest version
         run: |
-          LATEST_VERSION=$(curl -s https://api.github.com/repos/upx/upx/releases/latest | jq -r '.tag_name' | sed 's/v//')
-          
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/upx/upx/releases/latest | jq -r '.tag_name' | sed 's/v//')   
           if [ "${LATEST_VERSION}" != "null" ]; then
             if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/upx-${LATEST_VERSION}; then
               echo "tag ${LATEST_VERSION} exists already!"
