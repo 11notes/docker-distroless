@@ -8,11 +8,13 @@
       BUILD_ROOT=/go/dnspyre
   ARG BUILD_BIN=${BUILD_ROOT}/dnspyre
 
+# :: FOREIGN IMAGES
+  FROM 11notes/distroless AS distroless  
   
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
-# :: CMD-SOCKET
+# :: DNSPYRE
   FROM 11notes/go:1.24 AS build
   ARG APP_VERSION \
       BUILD_SRC \
@@ -31,7 +33,7 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
 # ╚═════════════════════════════════════════════════════╝
-  # :: HEADER
+# :: HEADER
   FROM scratch
 
   # :: default arguments
@@ -54,6 +56,7 @@
         APP_ROOT=${APP_ROOT}
 
   # :: multi-stage
+    COPY --from=distroless / /
     COPY --from=build ${APP_ROOT}/ /
 
 # :: EXECUTE
