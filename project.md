@@ -10,6 +10,8 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 * [11notes/distroless:strip](https://github.com/11notes/docker-distroless/blob/master/strip.dockerfile) - strip
 * [11notes/distroless:upx](https://github.com/11notes/docker-distroless/blob/master/upx.dockerfile) - upx
 * [11notes/distroless:pv](https://github.com/11notes/docker-distroless/blob/master/pv.dockerfile) - pv
+* [11notes/distroless:dnspyre](https://github.com/11notes/docker-distroless/blob/master/dnspyre.dockerfile) - dnspyre
+* [11notes/distroless:unrar](https://github.com/11notes/docker-distroless/blob/master/unrar.dockerfile) - unrar
 
 # CONTAINER ENTRYPOINTS
 * [11notes/distroless:tini-pm](https://github.com/11notes/go-tini-pm) - tini-pm
@@ -30,6 +32,11 @@ There are also application services, that are distroless, but don’t serve well
 * [11notes/chrony](https://github.com/11notes/docker-chrony) - chrony
 * [11notes/netbird](https://github.com/11notes/docker-netbird) - netbird
 * [11notes/pocket-id](https://github.com/11notes/docker-pocket-id) - pocket-id
+* [11notes/unbound](https://github.com/11notes/docker-unbound) - unbound
+* [11notes/caddy](https://github.com/11notes/docker-caddy) - caddy
+* [11notes/qbittorrent](https://github.com/11notes/docker-qbittorrent) - qbittorrent
+* [11notes/tinyauth](https://github.com/11notes/docker-tinyauth) - tinyauth
+* [11notes/redis](https://github.com/11notes/docker-redis) - redis
 
 ${{ content_build }}
 
