@@ -1,5 +1,8 @@
 name: tini-pm
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * *"
   push:
     tags:
       - 'tini-pm'
