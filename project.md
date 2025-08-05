@@ -11,7 +11,7 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 * [11notes/distroless:upx](https://github.com/11notes/docker-distroless/blob/master/upx.dockerfile) - upx
 * [11notes/distroless:pv](https://github.com/11notes/docker-distroless/blob/master/pv.dockerfile) - pv
 * [11notes/distroless:dnspyre](https://github.com/11notes/docker-distroless/blob/master/dnspyre.dockerfile) - dnspyre
-* [11notes/distroless:unrar](https://github.com/11notes/docker-distroless/blob/master/unrar.dockerfile) - unrar
+* [11notes/distroless:localhealth](https://github.com/11notes/docker-distroless/blob/master/localhealth.dockerfile) - localhealth
 
 # CONTAINER ENTRYPOINTS
 * [11notes/distroless:tini-pm](https://github.com/11notes/go-tini-pm) - tini-pm
