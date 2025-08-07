@@ -41,6 +41,7 @@ jobs:
         if: env.WORKFLOW_AUTO_UPDATE == 'true'
         uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
         with:
+          wait-for-completion: false
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
           inputs: '{ "release":"false", "readme":"false", "run-name":"dnspyre", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'

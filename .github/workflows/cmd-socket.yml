@@ -1,8 +1,6 @@
 name: cmd-socket
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 5 * * *"
   push:
     tags:
       - 'cmd-socket'
@@ -25,6 +23,7 @@ jobs:
       - name: build docker image
         uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
         with:
+          wait-for-completion: false
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
           inputs: '{ "release":"false", "readme":"false", "run-name":"cmd-socket", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
