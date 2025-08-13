@@ -44,7 +44,7 @@
 
   RUN set -ex; \
     eleven distroless ${BUILD_BIN}; \
-    mv /distroless/usr/local/bin/tini-static /distroless/usr/local/bin/tini;
+    mv ${APP_ROOT}/usr/local/bin/tini-static ${APP_ROOT}/usr/local/bin/tini;
 
 
 # ╔═════════════════════════════════════════════════════╗
