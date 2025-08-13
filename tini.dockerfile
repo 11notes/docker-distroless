@@ -34,12 +34,15 @@
       git;
 
   RUN set -ex; \
-    eleven git clone ${BUILD_SRC} v${APP_VERSION};
+    eleven git clone ${BUILD_SRC};
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
     cmake \
-      -DCMAKE_EXE_LINKER_FLAGS="-static"; \
+      -DCMAKE_EXE_LINKER_FLAGS="-static";
+
+  RUN set -ex; \
+    cd ${BUILD_ROOT}; \
     make -s -j $(nproc) 2>&1 > /dev/null;
 
   RUN set -ex; \
