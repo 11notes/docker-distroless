@@ -20,6 +20,7 @@
   # :: CURL
   FROM alpine AS build
   ARG APP_VERSION \
+      APP_ROOT \
       BUILD_SRC \
       BUILD_ROOT \
       BUILD_BIN \
