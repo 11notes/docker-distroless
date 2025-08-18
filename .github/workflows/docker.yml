@@ -48,7 +48,7 @@ jobs:
             runner: ubuntu-24.04
           - platform: arm64
             runner: ubuntu-24.04-arm
-          - platform: armv7
+          - platform: arm/v7
             runner: ubuntu-24.04-arm
 
     timeout-minutes: 1440
