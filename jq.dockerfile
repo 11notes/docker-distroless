@@ -33,7 +33,7 @@
       build-base;
 
   RUN set -ex; \
-    eleven git clone ${BUILD_SRC} jq-${APP_VERSION};
+    git clone --recurse-submodules -j8 ${BUILD_SRC} jq-${APP_VERSION};
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
