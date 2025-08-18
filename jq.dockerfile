@@ -4,7 +4,7 @@
 # GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
-      BUILD_SRC=jqlang/jq.git \
+      BUILD_SRC=https://github.com/jqlang/jq.git \
       BUILD_ROOT=/jq
   ARG BUILD_BIN=${BUILD_ROOT}/jq
 
@@ -20,8 +20,7 @@
       BUILD_SRC \
       BUILD_ROOT \
       BUILD_BIN \
-      BUILD_TAR \
-      GPG_KEY
+      BUILD_TAR
 
   RUN set -ex; \
     apk --update --no-cache add \
