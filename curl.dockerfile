@@ -11,7 +11,6 @@
 
   # :: FOREIGN IMAGES
   FROM 11notes/distroless AS distroless
-  FROM 11notes/util:bin AS util-bin
 
 
 # ╔═════════════════════════════════════════════════════╗
@@ -19,7 +18,6 @@
 # ╚═════════════════════════════════════════════════════╝
   # :: CURL
   FROM alpine AS build
-  COPY --from=util-bin / /
   ARG APP_VERSION \
       BUILD_SRC \
       BUILD_ROOT \
@@ -42,6 +40,8 @@
       zlib-static \
       tar \
       wget \
+      upx \
+      strip \
       pv;
 
   RUN set -ex; \
@@ -64,7 +64,10 @@
     make -s -j $(nproc) V=1 LDFLAGS="-static -all-static"  2>&1 > /dev/null;
 
   RUN set -ex; \
-    eleven distroless ${BUILD_BIN};
+    strip -v "${BUILD_BIN}" &> /dev/null; \
+    upx -q --no-backup -9 --best --lzma "${BUILD_BIN}" &> /dev/null; \
+    mkdir -p ${APP_ROOT}/usr/local/bin; \
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 
 # ╔═════════════════════════════════════════════════════╗
