@@ -13,7 +13,6 @@
 
 # FOREIGN IMAGES
   FROM 11notes/distroless AS distroless
-  FROM 11notes/util:bin AS util
 
 
 # ╔═════════════════════════════════════════════════════╗
@@ -30,8 +29,6 @@
       BUILD_TAR \
       BUILD_CHECKSUM_SRC
 
-  COPY --from=util / /
-
   RUN set -ex; \
     apk --update --no-cache add \
       gpg \
@@ -43,6 +40,8 @@
       linux-headers \
       make \
       python3 \
+      upx \
+      binutils \
       py-setuptools;
 
   RUN set -ex; \
@@ -63,7 +62,10 @@
     make -s -j $(nproc) 2>&1 > /dev/null
 
   RUN set -ex; \
-    eleven distroless ${BUILD_BIN};
+    strip -v "${BUILD_BIN}" &> /dev/null; \
+    upx -q --no-backup -9 --best --lzma "${BUILD_BIN}" &> /dev/null; \
+    mkdir -p ${APP_ROOT}/usr/local/bin; \
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 
 # ╔═════════════════════════════════════════════════════╗
