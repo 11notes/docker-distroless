@@ -86,7 +86,7 @@ jobs:
             const { inspect } = require('node:util');
             const { Buffer } = require('node:buffer');
             const inputs = `${{ toJSON(github.event.inputs) }}`.
-              replace(/"platform":\s*"\[(.+)\]",/i, /"platform": [$1],/);
+              replace(/"platform":\s*"\[(.+)\]",/i, "platform": [$1],);
             const opt = {input:{}, dot:{}};
 
             try{
