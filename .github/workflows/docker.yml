@@ -125,6 +125,9 @@ jobs:
                 prefix:((opt.input?.etc?.semverprefix) ? `${opt.input?.etc?.semverprefix}-` : ''),
                 suffix:((opt.input?.etc?.semversuffix) ? `-${opt.input?.etc?.semversuffix}` : ''),
                 description:(opt.dot?.readme?.description || ''),
+                platform:{
+                  sanitized:"${{ matrix.platform }}".replace(/[^A-Z-a-z0-9]+/i, ""),
+                },
                 tags:[],
               },
               app:{
@@ -196,7 +199,7 @@ jobs:
 
             // export to environment
               core.exportVariable('DOCKER_CACHE_REGISTRY', docker.cache.registry);
-              core.exportVariable('DOCKER_CACHE_NAME', docker.cache.name);
+              core.exportVariable('DOCKER_CACHE_NAME', `${docker.cache.name}-${docker.image.platform.sanitized}`);
               core.exportVariable('DOCKER_CACHE_GRYPE', docker.cache.grype);
 
               core.exportVariable('DOCKER_IMAGE_NAME', docker.image.name);
@@ -270,8 +273,8 @@ jobs:
           file: ${{ env.DOCKER_IMAGE_DOCKERFILE }}
           push: true
           platforms: linux/${{ matrix.platform }}
-          cache-from: type=registry,ref=${{ env.DOCKER_CACHE_NAME }}-${{ matrix.platform }}
-          cache-to: type=registry,ref=${{ env.DOCKER_CACHE_REGISTRY }}${{ env.DOCKER_CACHE_NAME }}-${{ matrix.platform }},mode=max,compression=zstd,force-compression=true
+          cache-from: type=registry,ref=${{ env.DOCKER_CACHE_NAME }}
+          cache-to: type=registry,ref=${{ env.DOCKER_CACHE_REGISTRY }}${{ env.DOCKER_CACHE_NAME }},mode=max,compression=zstd,force-compression=true
           build-args: |
             ${{ env.DOCKER_IMAGE_ARGUMENTS }}
           tags: |
@@ -314,8 +317,8 @@ jobs:
           sbom: true
           provenance: mode=max
           platforms: linux/${{ matrix.platform }}
-          cache-from: type=registry,ref=${{ env.DOCKER_CACHE_REGISTRY }}${{ env.DOCKER_CACHE_NAME }}-${{ matrix.platform }}
-          cache-to: type=registry,ref=${{ env.DOCKER_CACHE_NAME }}-${{ matrix.platform }},mode=max,compression=zstd,force-compression=true
+          cache-from: type=registry,ref=${{ env.DOCKER_CACHE_REGISTRY }}${{ env.DOCKER_CACHE_NAME }}
+          cache-to: type=registry,ref=${{ env.DOCKER_CACHE_NAME }},mode=max,compression=zstd,force-compression=true
           build-args: |
             ${{ env.DOCKER_IMAGE_ARGUMENTS }}
           tags: |
