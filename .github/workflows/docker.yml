@@ -540,7 +540,7 @@ jobs:
         with:
           images: ${{ matrix.registry }}/${{ env.DOCKER_IMAGE_NAME }}
           tags: |
-            ${{ env.DOCKER_IMAGE_TAGS_NO_REGISTRY }}
+            ${{ matrix.tags }}
 
       # CREATE MANIFEST
       - name: platform merge / create manifest and push
