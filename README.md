@@ -20,8 +20,10 @@ Build your own distroless images with this mini file system and some binaries
 * [11notes/distroless:pv](https://github.com/11notes/docker-distroless/blob/master/pv.dockerfile) - pv
 * [11notes/distroless:dnspyre](https://github.com/11notes/docker-distroless/blob/master/dnspyre.dockerfile) - dnspyre
 * [11notes/distroless:localhealth](https://github.com/11notes/docker-distroless/blob/master/localhealth.dockerfile) - localhealth
+* [11notes/distroless:jq](https://github.com/11notes/docker-distroless/blob/master/jq.dockerfile) - jq
 
 # CONTAINER ENTRYPOINTS
+* [11notes/distroless:tini](https://github.com/11notes/docker-distroless/blob/master/tini.dockerfile) - tini
 * [11notes/distroless:tini-pm](https://github.com/11notes/go-tini-pm) - tini-pm
 
 # CONTAINER HELPERS
@@ -74,4 +76,4 @@ docker pull quay.io/11notes/distroless:latest
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-distroless/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-distroless/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-distroless/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 13.08.2025, 09:00:15 (CET)*
+*created 18.08.2025, 14:59:12 (CET)*
