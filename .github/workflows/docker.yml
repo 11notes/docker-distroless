@@ -88,17 +88,16 @@ jobs:
             const inputs = `${{ toJSON(github.event.inputs) }}`;
             const opt = {input:{}, dot:{}};
 
-            core.info(inputs);
-
             try{
               if(inputs.length > 0){
+                inputs = inputs.replace(/"platform":\s*"\[(.+)\]",/i, /"platform": [$1]/);
                 opt.input = JSON.parse(inputs);
                 if(opt.input?.etc){
                   opt.input.etc = JSON.parse(Buffer.from(opt.input.etc, 'base64').toString('ascii'));
                 }
               }
             }catch(e){
-              core.warning('could not parse github.event.inputs');
+              core.warning('could not parse github.event.inputs', e);
             }
 
             try{
