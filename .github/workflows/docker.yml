@@ -204,8 +204,10 @@ jobs:
               core.exportVariable('DOCKER_CACHE_GRYPE', docker.cache.grype);
 
               core.exportVariable('DOCKER_IMAGE_NAME', docker.image.name);
+              core.setOutput('DOCKER_IMAGE_NAME', docker.image.name);
               core.exportVariable('DOCKER_IMAGE_TAGS', docker.tags.join(','));
               core.exportVariable('DOCKER_IMAGE_MERGE_TAGS', docker.merge_tags.join("\r\n"));
+              core.setOutput('DOCKER_IMAGE_MERGE_TAGS', docker.merge_tags.join("\r\n"));
               core.exportVariable('DOCKER_IMAGE_DESCRIPTION', docker.image.description);
               core.exportVariable('DOCKER_IMAGE_ARGUMENTS', arguments.join("\r\n"));
               core.exportVariable('DOCKER_IMAGE_DOCKERFILE', opt.input?.etc?.dockerfile || 'arch.dockerfile');
@@ -221,12 +223,6 @@ jobs:
                 core.exportVariable('WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE', opt.dot.readme.comparison.image);
                 core.exportVariable('WORKFLOW_CREATE_COMPARISON_IMAGE', `${docker.image.name}:${docker.app.version}`);
               }
-
-      - name: init / export to job outputs
-        id: setup-environment
-        run: |
-          echo "DOCKER_IMAGE_NAME=${{ env.DOCKER_IMAGE_NAME }}" >> $GITHUB_OUTPUT
-          echo "DOCKER_IMAGE_MERGE_TAGS=${{ env.DOCKER_IMAGE_MERGE_TAGS }}" >> $GITHUB_OUTPUT
 
 
       # ╔═════════════════════════════════════════════════════╗
