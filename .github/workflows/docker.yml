@@ -76,7 +76,7 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       # CHECKOUT ALL DEPTHS (ALL TAGS)
       - name: init / checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
@@ -84,7 +84,7 @@ jobs:
       # SETUP ENVIRONMENT VARIABLES AND INPUTS
       - name: init / setup environment
         id: setup-environment
-        uses: actions/github-script@62c3794a3eb6788d9a2a72b219504732c0c9a298
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           script: |
             const { existsSync, readFileSync } = require('node:fs');
@@ -233,14 +233,14 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       # DOCKER HUB
       - name: docker / login to hub
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           username: 11notes
           password: ${{ secrets.DOCKER_TOKEN }}
 
       # GITHUB CONTAINER REGISTRY
       - name: github / login to ghcr
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           registry: ghcr.io
           username: 11notes
@@ -248,7 +248,7 @@ jobs:
 
       # REDHAT QUAY
       - name: quay / login to quay
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           registry: quay.io
           username: 11notes+github
@@ -261,12 +261,12 @@ jobs:
       # SETUP QEMU IF ARCH IS ARM v7 (runs on arm64 for better performance)
       - name: container image / setup qemu
         if: env.WORKFLOW_BUILD == 'true' && matrix.platform == 'arm/v7'
-        uses: docker/setup-qemu-action@53851d14592bedcffcf25ea515637cff71ef929a
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
 
       # SETUP BUILDX BUILDER WITH USING LOCAL REGISTRY
       - name: container image / setup buildx
         if: env.WORKFLOW_BUILD == 'true'
-        uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
         with:
           driver-opts: network=host
 
@@ -274,7 +274,7 @@ jobs:
       - name: container image / build
         if: env.WORKFLOW_BUILD == 'true'
         id: image-build
-        uses: docker/build-push-action@55146d969b0dff1a5c12630229609757af5b1081
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
           file: ${{ env.DOCKER_IMAGE_DOCKERFILE }}
@@ -291,7 +291,7 @@ jobs:
       - name: container image / scan with grype
         if: env.WORKFLOW_BUILD == 'true'
         id: grype
-        uses: anchore/scan-action@d5c127d5807a08a21a8bbb603b25e0fbd38cf9d4
+        uses: anchore/scan-action@1638637db639e0ade3258b51db49a9a137574c3e # v6.5.1
         with:
           image: ${{ env.DOCKER_CACHE_GRYPE }}
           fail-build: ${{ env.WORKFLOW_GRYPE_FAIL_ON_SEVERITY }}
@@ -303,7 +303,7 @@ jobs:
       # OUTPUT CVE REPORT IF SCAN FAILS
       - name: container image / scan with grype FAILED
         if: env.WORKFLOW_BUILD == 'true' && (failure() || steps.grype.outcome == 'failure') && steps.image-build.outcome == 'success'
-        uses: anchore/scan-action@d5c127d5807a08a21a8bbb603b25e0fbd38cf9d4
+        uses: anchore/scan-action@1638637db639e0ade3258b51db49a9a137574c3e # v6.5.1
         with:
           image: ${{ env.DOCKER_CACHE_GRYPE }}
           fail-build: false
@@ -316,7 +316,7 @@ jobs:
       - name: container image / push to registries
         id: image-push
         if: env.WORKFLOW_BUILD == 'true'
-        uses: docker/build-push-action@55146d969b0dff1a5c12630229609757af5b1081
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
           file: ${{ env.DOCKER_IMAGE_DOCKERFILE }}
@@ -371,7 +371,7 @@ jobs:
       # CREATE GITHUB RELEASE
       - name: github release / create
         if: env.WORKFLOW_CREATE_RELEASE == 'true' && steps.git-release.outcome == 'success'
-        uses: actions/create-release@4c11c9fe1dcd9636620a16455165783b20fc7ea0
+        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -389,7 +389,7 @@ jobs:
       - name: README.md / checkout
         if: matrix.platform == 'amd64'
         continue-on-error: true
-        run: |     
+        run: |
           git checkout HEAD
 
       # COMPARE DOCKER IMAGE (will be moved to action in the future)
@@ -419,7 +419,7 @@ jobs:
       - name: README.md / push to Docker Hub
         continue-on-error: true
         if: steps.github-readme.outcome == 'success' && hashFiles('README_NONGITHUB.md') != '' && matrix.platform == 'amd64'
-        uses: christian-korneck/update-container-description-action@d36005551adeaba9698d8d67a296bd16fa91f8e8
+        uses: christian-korneck/update-container-description-action@d36005551adeaba9698d8d67a296bd16fa91f8e8 # v1
         env:
           DOCKER_USER: 11notes
           DOCKER_PASS: ${{ secrets.DOCKER_TOKEN }}
@@ -497,14 +497,14 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       # DOCKER HUB
       - name: docker / login to hub
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           username: 11notes
           password: ${{ secrets.DOCKER_TOKEN }}
 
       # GITHUB CONTAINER REGISTRY
       - name: github / login to ghcr
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           registry: ghcr.io
           username: 11notes
@@ -512,7 +512,7 @@ jobs:
 
       # REDHAT QUAY
       - name: quay / login to quay
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           registry: quay.io
           username: 11notes+github
