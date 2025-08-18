@@ -250,7 +250,7 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       # SETUP QEMU IF ARCH IS ARM v7 (runs on arm64 for better performance)
       - name: container image / setup qemu
-        if: env.WORKFLOW_BUILD == 'true' && ${{ matrix.platform }} == 'armv7'
+        if: env.WORKFLOW_BUILD == 'true' && matrix.platform == 'armv7'
         uses: docker/setup-qemu-action@53851d14592bedcffcf25ea515637cff71ef929a
 
       # SETUP BUILDX BUILDER WITH USING LOCAL REGISTRY
