@@ -42,10 +42,13 @@
       tar \
       wget \
       upx \
-      strip \
+      binutils \
       gpg \
       gpg-agent \
       pv;
+
+  RUN set -ex; \
+    gpg --keyserver hkp://keys.gnupg.net --recv-keys 27EDEAF22F3ABCEB50DB9A125CC908FDB71E12C2;
 
   RUN set -ex; \
     wget -q --show-progress --progress=bar:force ${BUILD_SRC}; \
