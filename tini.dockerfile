@@ -5,11 +5,8 @@
   ARG APP_UID=1000 \
       APP_GID=1000 \
       BUILD_ROOT=/tini \
-      BUILD_SRC=krallin/tini.git
+      BUILD_SRC=https://github.com/krallin/tini.git
   ARG BUILD_BIN=${BUILD_ROOT}/tini-static
-
-  # :: FOREIGN IMAGES
-  FROM 11notes/util:bin AS util-bin      
 
 
 # ╔═════════════════════════════════════════════════════╗
@@ -17,7 +14,6 @@
 # ╚═════════════════════════════════════════════════════╝
 # :: TINI
   FROM alpine AS build
-  COPY --from=util-bin / /
   ARG APP_VERSION \
       APP_ROOT \
       BUILD_SRC \
@@ -31,10 +27,12 @@
       g++ \
       make \
       cmake \
+      upx \
+      binutils \
       git;
 
   RUN set -ex; \
-    eleven git clone ${BUILD_SRC};
+    git clone --recurse-submodules -j8 ${BUILD_SRC};
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
@@ -46,8 +44,10 @@
     make -s -j $(nproc) 2>&1 > /dev/null;
 
   RUN set -ex; \
-    eleven distroless ${BUILD_BIN}; \
-    mv ${APP_ROOT}/usr/local/bin/tini-static ${APP_ROOT}/usr/local/bin/tini;
+    strip -v "${BUILD_BIN}" &> /dev/null; \
+    upx -q --no-backup -9 --best --lzma "${BUILD_BIN}" &> /dev/null; \
+    mkdir -p ${APP_ROOT}/usr/local/bin; \
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin/tini;
 
 
 # ╔═════════════════════════════════════════════════════╗
