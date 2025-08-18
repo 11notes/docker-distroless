@@ -8,9 +8,6 @@
       BUILD_SRC=https://github.com/upx/upx.git
   ARG BUILD_BIN=${BUILD_ROOT}/build/upx
 
-  # :: FOREIGN IMAGES
-  FROM 11notes/util:bin AS util-bin      
-
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
@@ -58,7 +55,8 @@
     cmake --build build 2>&1 > /dev/null;
 
   RUN set -ex; \
-    eleven distroless ${BUILD_BIN};
+    mkdir -p ${APP_ROOT}/usr/local/bin; \
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 
 # ╔═════════════════════════════════════════════════════╗

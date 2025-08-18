@@ -11,9 +11,6 @@
   ARG BUILD_ROOT=/file-${APP_VERSION} \
       BUILD_SRC=https://astron.com/pub/file/${BUILD_TAR}
 
-  # :: FOREIGN IMAGES
-  FROM 11notes/util:bin AS util-bin
-
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
@@ -68,7 +65,8 @@
     make install;
 
   RUN set -ex; \
-    eleven distroless ${BUILD_BIN};
+    mkdir -p ${APP_ROOT}/usr/local/bin; \
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
   RUN set -ex; \
     mkdir -p ${APP_ROOT}/usr/local/share/misc; \

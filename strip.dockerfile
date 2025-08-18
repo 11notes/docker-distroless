@@ -11,8 +11,6 @@
       BUILD_SRC=https://ftp.gnu.org/gnu/binutils/${BUILD_TAR} \
       GPG_KEY=13FCEF89DD9E3C4F
 
-  # :: FOREIGN IMAGES
-  FROM 11notes/util:bin AS util-bin
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
@@ -61,7 +59,8 @@
     make install;
 
   RUN set -ex; \
-    eleven distroless ${BUILD_BIN};
+    mkdir -p ${APP_ROOT}/usr/local/bin; \
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 
 # ╔═════════════════════════════════════════════════════╗
