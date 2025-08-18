@@ -22,7 +22,8 @@
   ARG APP_VERSION \
       BUILD_SRC \
       BUILD_ROOT \
-      BUILD_BIN
+      BUILD_BIN \
+      BUILD_TAR
 
   ENV CC=clang
 
