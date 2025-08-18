@@ -14,7 +14,7 @@ on:
         description: 'list of platforms to build for'
         type: string
         required: false
-        default: '["amd64", "arm64", "arm/v7"]'
+        default: "amd64,arm64,arm/v7"
 
       build:
         description: 'set WORKFLOW_BUILD'
@@ -36,20 +36,37 @@ on:
         required: false
 
 jobs:
+  matrix:
+    name: create job matrix
+    runs-on: ubuntu-latest
+    outputs:
+      stringify: ${{ steps.setup-matrix.outputs.stringify }}
+
+    steps:
+      - name: matrix / setup list
+        id: setup-matrix
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const platforms = "${{ github.event.inputs.platform }}".split(",");
+            const matrix = {include:[]};
+            for(const platform of platforms){
+              switch(platform){
+                case "amd64": matrix.include.push({platform:platform, runner:"ubuntu-24.04"}); break;
+                case "arm64": matrix.include.push({platform:platform, runner:"ubuntu-24.04-arm"}); break;
+                case "arm/v7": matrix.include.push({platform:platform, runner:"ubuntu-24.04-arm"}); break;
+              }
+            }
+            const stringify = JSON.stringify(matrix);
+            core.setOutput('stringify', stringify);
+            core.info(stringify);
+
   docker:
     name: create container image
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
-      matrix:
-        platform: ${{ fromJSON(github.event.inputs.platform)}}
-        include:
-          - platform: amd64
-            runner: ubuntu-24.04
-          - platform: arm64
-            runner: ubuntu-24.04-arm
-          - platform: arm/v7
-            runner: ubuntu-24.04-arm
+      matrix: ${{ fromJSON(needs.matrix.outputs.stringify) }}
     outputs:
       DOCKER_IMAGE_NAME: ${{ steps.setup-environment.outputs.DOCKER_IMAGE_NAME }}
       DOCKER_IMAGE_MERGE_TAGS: ${{ steps.setup-environment.outputs.DOCKER_IMAGE_MERGE_TAGS }}
@@ -69,6 +86,8 @@ jobs:
       attestations: write
       id-token: write
       security-events: write
+
+    needs: matrix
 
     steps:
       # ╔═════════════════════════════════════════════════════╗
