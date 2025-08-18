@@ -5,8 +5,7 @@
   ARG APP_UID=1000 \
       APP_GID=1000 \
       APP_VERSION=5.46 \
-      BUILD_BIN=/usr/local/bin/file \
-      GPG_KEY=BE04995BA8F90ED0C0C176C471112AB16CB33B3A
+      BUILD_BIN=/usr/local/bin/file
   ARG BUILD_TAR=file-${APP_VERSION}.tar.gz
   ARG BUILD_ROOT=/file-${APP_VERSION} \
       BUILD_SRC=https://astron.com/pub/file/${BUILD_TAR}
@@ -23,8 +22,7 @@
       BUILD_SRC \
       BUILD_ROOT \
       BUILD_BIN \
-      BUILD_TAR \
-      GPG_KEY
+      BUILD_TAR
 
   RUN set -ex; \
     apk --update --no-cache add \
@@ -44,14 +42,14 @@
       g++;
 
   RUN set -ex; \
-    gpg --keyserver hkp://keys.gnupg.net --recv-keys ${GPG_KEY};
+    gpg --keyserver hkp://keys.gnupg.net --recv-keys BE04995BA8F90ED0C0C176C471112AB16CB33B3A;
 
   RUN set -ex; \
     wget -q --show-progress --progress=bar:force ${BUILD_SRC}; \
     wget -q --show-progress --progress=bar:force ${BUILD_SRC}.asc;
 
   RUN set -ex; \
-    gpg --verify ${BUILD_TAR}.asc ${BUILD_TAR} || exit 1; \
+    gpg --verify ${BUILD_TAR}.asc ${BUILD_TAR}; \
     pv ${BUILD_TAR} | tar xz;
 
   RUN set -ex; \
