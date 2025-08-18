@@ -13,7 +13,7 @@
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
   # :: TINI-PM
-  FROM 11notes/go:1.25 AS build
+  FROM 11notes/go:1.24 AS build
   ARG APP_VERSION \
       BUILD_SRC \
       BUILD_ROOT \
