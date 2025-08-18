@@ -39,9 +39,6 @@ jobs:
   docker:
     name: create container image
     runs-on: ${{ matrix.runner }}
-    outputs:
-      DOCKER_IMAGE_NAME: ${{ steps.setup-environment.outputs.DOCKER_IMAGE_NAME }}
-      DOCKER_IMAGE_TAGS_NO_REGISTRY: ${{ steps.setup-environment.outputs.DOCKER_IMAGE_TAGS_NO_REGISTRY }}
     strategy:
       fail-fast: false
       matrix:
@@ -53,6 +50,9 @@ jobs:
             runner: ubuntu-24.04-arm
           - platform: arm/v7
             runner: ubuntu-24.04-arm
+    outputs:
+      DOCKER_IMAGE_NAME: ${{ steps.setup-environment.outputs.DOCKER_IMAGE_NAME }}
+      DOCKER_IMAGE_TAGS_NO_REGISTRY: ${{ steps.setup-environment.outputs.DOCKER_IMAGE_TAGS_NO_REGISTRY }}
 
     timeout-minutes: 1440
 
@@ -81,7 +81,6 @@ jobs:
 
       # SETUP ENVIRONMENT VARIABLES AND INPUTS
       - name: init / setup environment
-        id: setup-environment
         uses: actions/github-script@62c3794a3eb6788d9a2a72b219504732c0c9a298
         with:
           script: |
@@ -224,6 +223,12 @@ jobs:
                 core.exportVariable('WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE', opt.dot.readme.comparison.image);
                 core.exportVariable('WORKFLOW_CREATE_COMPARISON_IMAGE', `${docker.image.name}:${docker.app.version}`);
               }
+
+      - name: init / export to job outputs
+        id: setup-environment
+        run: |
+          echo "DOCKER_IMAGE_NAME=${{ env.DOCKER_IMAGE_NAME }}" >> $GITHUB_OUTPUT
+          echo "DOCKER_IMAGE_TAGS_NO_REGISTRY=${{ env.DOCKER_IMAGE_TAGS_NO_REGISTRY }}" >> $GITHUB_OUTPUT
 
 
       # ╔═════════════════════════════════════════════════════╗
@@ -474,6 +479,10 @@ jobs:
       fail-fast: false
       matrix:
         registry: [docker.io, ghcr.io, quay.io]
+    
+    env:
+      DOCKER_IMAGE_NAME: ${{ needs.docker.outputs.DOCKER_IMAGE_NAME }}
+      DOCKER_IMAGE_TAGS_NO_REGISTRY: ${{ needs.docker.outputs.DOCKER_IMAGE_TAGS_NO_REGISTRY }}
 
     permissions:
       contents: read
@@ -531,7 +540,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5.8.0
         with:
-          images: ${{ matrix.registry }}/${{ needs.docker.outputs.DOCKER_IMAGE_NAME }}
+          images: ${{ matrix.registry }}/${{ env.DOCKER_IMAGE_NAME }}
           tags: |
             ${{ env.DOCKER_IMAGE_TAGS_NO_REGISTRY }}
 
@@ -540,9 +549,9 @@ jobs:
         working-directory: ${{ runner.temp }}/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf 'docker.io/${{ needs.docker.outputs.DOCKER_IMAGE_NAME }}@sha256:%s ' *)
+            $(printf 'docker.io/${{ env.DOCKER_IMAGE_NAME }}@sha256:%s ' *)
 
       # INSPECT MANIFEST
       - name: platform merge / inspect
         run: |
-          docker buildx imagetools inspect ${{ matrix.registry }}/${{ needs.docker.outputs.DOCKER_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ matrix.registry }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
