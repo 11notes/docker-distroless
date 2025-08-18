@@ -5,7 +5,8 @@
   ARG APP_UID=1000 \
       APP_GID=1000 \
       APP_VERSION=8.15.0
-  ARG BUILD_SRC=https://curl.se/download/curl-${APP_VERSION}.tar.gz \
+  ARG BUILD_TAR=curl-${APP_VERSION}.tar.gz
+  ARG BUILD_SRC=https://curl.se/download/${BUILD_TAR} \
       BUILD_ROOT=/curl-${APP_VERSION} \
       BUILD_BIN=/curl-${APP_VERSION}/src/curl
 
@@ -42,11 +43,18 @@
       wget \
       upx \
       strip \
+      gpg \
+      gpg-agent \
       pv;
 
   RUN set -ex; \
     wget -q --show-progress --progress=bar:force ${BUILD_SRC}; \
+    wget -q --show-progress --progress=bar:force ${BUILD_SRC}.asc; \
     pv curl-${APP_VERSION}.tar.gz | tar xz;
+
+  RUN set -ex; \
+    gpg --verify ${BUILD_TAR}.asc ${BUILD_TAR}; \
+    pv ${BUILD_TAR} | tar xz;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
