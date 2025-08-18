@@ -10,8 +10,8 @@ on:
         required: false
         default: 'docker'
 
-      platforms:
-        description: 'list of architectures/platforms to build for'
+      platform:
+        description: 'list of platforms to build for'
         type: string
         required: false
         default: '["amd64", "arm64", "armv7"]'
@@ -42,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: ${{ fromJSON(github.event.inputs.platforms)}}
+        platform: ${{ fromJSON(github.event.inputs.platform)}}
         include:
           - platform: amd64
             runner: ubuntu-24.04
@@ -86,7 +86,9 @@ jobs:
             const { inspect } = require('node:util');
             const { Buffer } = require('node:buffer');
             const inputs = `${{ toJSON(github.event.inputs) }}`;
-            const opt = {input:{}, dot:{}};            
+            const opt = {input:{}, dot:{}};
+
+            core.info(inputs);
 
             try{
               if(inputs.length > 0){
