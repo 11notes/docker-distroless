@@ -357,7 +357,7 @@ jobs:
         with:
           subject-name: docker.io/${{ env.DOCKER_IMAGE_NAME }}
           subject-digest: ${{ steps.image-push.outputs.digest }}
-          push-to-registry: true
+          push-to-registry: false
 
       # EXPORT DIGEST
       - name: container image / export digest
