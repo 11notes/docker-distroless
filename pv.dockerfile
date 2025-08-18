@@ -10,16 +10,12 @@
   ARG BUILD_BIN=${BUILD_ROOT}/dist/bin/pv \
       BUILD_SRC=http://ivarch.com/s/${BUILD_TAR}
 
-  # :: FOREIGN IMAGES
-  FROM 11notes/util:bin AS util-bin
-
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
 # :: PV
   FROM alpine AS build
-  COPY --from=util-bin / /
   COPY ./src/pv /
   ARG APP_VERSION \
       APP_ROOT \
@@ -30,9 +26,7 @@
 
   RUN set -ex; \
     apk --update --no-cache add \
-      file \
       binutils \
-      upx \
       pv \
       tar \
       wget \
@@ -66,7 +60,8 @@
     make install;
 
   RUN set -ex; \
-    eleven distroless ${BUILD_BIN};
+    mkdir -p ${APP_ROOT}/usr/local/bin; \
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 
 # ╔═════════════════════════════════════════════════════╗

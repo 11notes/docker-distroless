@@ -6,18 +6,14 @@
       APP_GID=1000 \
       BUILD_SRC=jqlang/jq.git \
       BUILD_ROOT=/jq
-  ARG BUILD_BIN=${BUILD_ROOT}/jq  
-
-# :: FOREIGN IMAGES
-  FROM 11notes/util:bin AS util-bin
+  ARG BUILD_BIN=${BUILD_ROOT}/jq
 
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
-# :: FILE
+# :: JQ
   FROM alpine AS build
-  COPY --from=util-bin / /
   ARG TARGETARCH \
       APP_ROOT \
       APP_VERSION \
@@ -51,7 +47,8 @@
     make -s -j $(nproc) LDFLAGS="-all-static"  2>&1 > /dev/null;
 
   RUN set -ex; \
-    eleven distroless ${BUILD_BIN};
+    mkdir -p ${APP_ROOT}/usr/local/bin; \
+    cp ${BUILD_BIN} ${APP_ROOT}/usr/local/bin;
 
 
 # ╔═════════════════════════════════════════════════════╗
