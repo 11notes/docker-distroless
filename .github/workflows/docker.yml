@@ -205,7 +205,7 @@ jobs:
 
               core.exportVariable('DOCKER_IMAGE_NAME', docker.image.name);
               core.exportVariable('DOCKER_IMAGE_TAGS', docker.tags.join(','));
-              core.exportVariable('DOCKER_IMAGE_MERGE_TAGS', `["${docker.merge_tags.join(`","`)}"]`);
+              core.exportVariable('DOCKER_IMAGE_MERGE_TAGS', docker.merge_tags.join("\r\n"));
               core.exportVariable('DOCKER_IMAGE_DESCRIPTION', docker.image.description);
               core.exportVariable('DOCKER_IMAGE_ARGUMENTS', arguments.join("\r\n"));
               core.exportVariable('DOCKER_IMAGE_DOCKERFILE', opt.input?.etc?.dockerfile || 'arch.dockerfile');
@@ -479,10 +479,10 @@ jobs:
       fail-fast: false
       matrix:
         registry: [docker.io, ghcr.io, quay.io]
-        tags: ${{ fromJSON(needs.docker.outputs.DOCKER_IMAGE_MERGE_TAGS)}}
     
     env:
       DOCKER_IMAGE_NAME: ${{ needs.docker.outputs.DOCKER_IMAGE_NAME }}
+      DOCKER_IMAGE_MERGE_TAGS: ${{ needs.docker.outputs.DOCKER_IMAGE_MERGE_TAGS }}
 
     permissions:
       contents: read
@@ -542,7 +542,7 @@ jobs:
         with:
           images: ${{ matrix.registry }}/${{ env.DOCKER_IMAGE_NAME }}
           tags: |
-            ${{ matrix.tags }}
+            ${{ env.DOCKER_IMAGE_MERGE_TAGS }}
 
       # CREATE MANIFEST
       - name: platform merge / create manifest and push
