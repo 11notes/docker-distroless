@@ -74,7 +74,7 @@ jobs:
               tag:"node",
               semversuffix:"stable"
               version:"${{ env.STABLE_VERSION }}",
-              arch:"linux/amd64,linux/arm64",
+              semver:{disable:{rolling: true}}
             };
             core.exportVariable('WORKFLOW_BASE64JSON_STABLE', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
