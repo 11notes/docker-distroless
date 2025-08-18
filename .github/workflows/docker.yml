@@ -205,7 +205,7 @@ jobs:
 
               core.exportVariable('DOCKER_IMAGE_NAME', docker.image.name);
               core.exportVariable('DOCKER_IMAGE_TAGS', docker.tags.join(','));
-              core.exportVariable('DOCKER_IMAGE_MERGE_TAGS', `'["${docker.merge_tags.join(`","`)}"]`);
+              core.exportVariable('DOCKER_IMAGE_MERGE_TAGS', `'["${docker.merge_tags.join(`","`)}"]'`);
               core.exportVariable('DOCKER_IMAGE_DESCRIPTION', docker.image.description);
               core.exportVariable('DOCKER_IMAGE_ARGUMENTS', arguments.join("\r\n"));
               core.exportVariable('DOCKER_IMAGE_DOCKERFILE', opt.input?.etc?.dockerfile || 'arch.dockerfile');
@@ -365,7 +365,7 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       # CREATE RELEASE MARKUP
       - name: github release / prepare markdown
-        if: env.WORKFLOW_CREATE_RELEASE == 'true'
+        if: env.WORKFLOW_CREATE_RELEASE == 'true' && matrix.platform == 'amd64'
         id: git-release
         uses: 11notes/action-docker-release@v1
 
@@ -388,13 +388,14 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       # CHECKOUT HEAD TO BE UP TO DATE WITH EVERYTHING
       - name: README.md / checkout
+        if: matrix.platform == 'amd64'
         continue-on-error: true
         run: |     
           git checkout HEAD
 
       # COMPARE DOCKER IMAGE (will be moved to action in the future)
       - name: docker / setup comparison images
-        if: env.WORKFLOW_CREATE_COMPARISON == 'true'
+        if: env.WORKFLOW_CREATE_COMPARISON == 'true' &&  matrix.platform == 'amd64'
         continue-on-error: true
         run: |    
           docker image pull ${{ env.WORKFLOW_CREATE_COMPARISON_IMAGE }}
@@ -409,7 +410,7 @@ jobs:
       - name: README.md / create
         id: github-readme
         continue-on-error: true
-        if: env.WORKFLOW_CREATE_README == 'true'
+        if: env.WORKFLOW_CREATE_README == 'true' && matrix.platform == 'amd64'
         uses: 11notes/action-docker-readme@v1
         with:
           sarif_file: ${{ steps.grype.outputs.sarif }}
@@ -418,7 +419,7 @@ jobs:
       # UPLOAD README.md to DOCKER HUB
       - name: README.md / push to Docker Hub
         continue-on-error: true
-        if: steps.github-readme.outcome == 'success' && hashFiles('README_NONGITHUB.md') != ''
+        if: steps.github-readme.outcome == 'success' && hashFiles('README_NONGITHUB.md') != '' && matrix.platform == 'amd64'
         uses: christian-korneck/update-container-description-action@d36005551adeaba9698d8d67a296bd16fa91f8e8
         env:
           DOCKER_USER: 11notes
@@ -432,7 +433,7 @@ jobs:
       # COMMIT NEW README.md, LICENSE and compose
       - name: README.md / github commit & push
         continue-on-error: true
-        if: steps.github-readme.outcome == 'success' && hashFiles('README.md') != ''
+        if: steps.github-readme.outcome == 'success' && hashFiles('README.md') != '' && matrix.platform == 'amd64'
         run: |         
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -455,6 +456,7 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       # UPDATE REPO WITH DEFAULT SETTINGS FOR CONTAINER IMAGE
       - name: github / update description and set repo defaults
+        if:  matrix.platform == 'amd64'
         run: |
           curl --request PATCH \
             --url https://api.github.com/repos/${{ github.repository }} \
