@@ -52,7 +52,7 @@ jobs:
             runner: ubuntu-24.04-arm
     outputs:
       DOCKER_IMAGE_NAME: ${{ steps.setup-environment.outputs.DOCKER_IMAGE_NAME }}
-      DOCKER_IMAGE_TAGS_NO_REGISTRY: ${{ steps.setup-environment.outputs.DOCKER_IMAGE_TAGS_NO_REGISTRY }}
+      DOCKER_IMAGE_MERGE_TAGS: ${{ steps.setup-environment.outputs.DOCKER_IMAGE_MERGE_TAGS }}
 
     timeout-minutes: 1440
 
