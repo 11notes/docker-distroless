@@ -34,7 +34,7 @@ jobs:
               dockerfile:"node.dockerfile",
               tag:"node",
               version:"${{ env.LATEST_VERSION }}",
-              arch:"linux/amd64,linux/arm64",
+              semver:{disable:{rolling: true}}
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
