@@ -205,7 +205,7 @@ jobs:
 
               core.exportVariable('DOCKER_IMAGE_NAME', docker.image.name);
               core.exportVariable('DOCKER_IMAGE_TAGS', docker.tags.join(','));
-              core.exportVariable('DOCKER_IMAGE_MERGE_TAGS', `'["${docker.merge_tags.join(`","`)}"]'`);
+              core.exportVariable('DOCKER_IMAGE_MERGE_TAGS', `["${docker.merge_tags.join(`","`)}"]`);
               core.exportVariable('DOCKER_IMAGE_DESCRIPTION', docker.image.description);
               core.exportVariable('DOCKER_IMAGE_ARGUMENTS', arguments.join("\r\n"));
               core.exportVariable('DOCKER_IMAGE_DOCKERFILE', opt.input?.etc?.dockerfile || 'arch.dockerfile');
