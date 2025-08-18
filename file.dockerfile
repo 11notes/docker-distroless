@@ -17,7 +17,6 @@
 # ╚═════════════════════════════════════════════════════╝
 # :: FILE
   FROM alpine AS build
-  COPY --from=util-bin / /
   ARG TARGETARCH \
       APP_ROOT \
       APP_VERSION \

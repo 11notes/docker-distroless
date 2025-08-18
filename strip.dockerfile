@@ -17,7 +17,6 @@
 # ╚═════════════════════════════════════════════════════╝
 # :: STRIP
   FROM alpine AS build
-  COPY --from=util-bin / /
   COPY ./src/pv /
   ARG APP_VERSION \
       APP_ROOT \

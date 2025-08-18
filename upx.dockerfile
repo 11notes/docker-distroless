@@ -14,7 +14,6 @@
 # ╚═════════════════════════════════════════════════════╝
 # :: UPX
   FROM alpine AS build
-  COPY --from=util-bin / /
   ARG APP_VERSION \
       APP_ROOT \
       BUILD_SRC \
