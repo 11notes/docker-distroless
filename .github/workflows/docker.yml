@@ -208,6 +208,7 @@ jobs:
               core.exportVariable('DOCKER_IMAGE_DESCRIPTION', docker.image.description);
               core.exportVariable('DOCKER_IMAGE_ARGUMENTS', arguments.join("\r\n"));
               core.exportVariable('DOCKER_IMAGE_DOCKERFILE', opt.input?.etc?.dockerfile || 'arch.dockerfile');
+              core.exportVariable('DOCKER_IMAGE_PLATFORM_SANITIZED', docker.image.platform.sanitized);
 
               core.exportVariable('WORKFLOW_BUILD', (opt.input?.build === undefined) ? false : opt.input.build);
               core.exportVariable('WORKFLOW_CREATE_RELEASE', (opt.input?.release === undefined) ? false : opt.input.release);
@@ -342,11 +343,11 @@ jobs:
           touch "${{ runner.temp }}/digests/${digest#sha256:}"
 
       # UPLOAD DIGEST
-      - name: Upload digest
+      - name: container image / upload
         if: env.WORKFLOW_BUILD == 'true' && steps.image-push.outcome == 'success'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: digests-linux-${{ matrix.platform }}
+          name: digests-linux-${{ env.DOCKER_IMAGE_PLATFORM_SANITIZED }}
           path: ${{ runner.temp }}/digests/*
           if-no-files-found: error
           retention-days: 7
