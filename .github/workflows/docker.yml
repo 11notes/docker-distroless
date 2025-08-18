@@ -90,7 +90,7 @@ jobs:
 
             try{
               if(inputs.length > 0){
-                inputs = inputs.replace(/"platform":\s*"\[(.+)\]",/i, /"platform": [$1]/);
+                inputs = inputs.replace(/"platform":\s*"\[(.+)\]",/i, /"platform": [$1],/);
                 opt.input = JSON.parse(inputs);
                 if(opt.input?.etc){
                   opt.input.etc = JSON.parse(Buffer.from(opt.input.etc, 'base64').toString('ascii'));
