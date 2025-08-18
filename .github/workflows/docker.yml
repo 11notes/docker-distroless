@@ -146,7 +146,7 @@ jobs:
                 registry:'localhost:5000/',
               },
               tags:[],
-              tags_no_registry:[],
+              merge_tags:[],
             };
 
             docker.cache.name = `${docker.image.name}:${docker.image.prefix}buildcache${docker.image.suffix}`;
@@ -155,17 +155,15 @@ jobs:
             docker.app.suffix = docker.image.suffix;
 
             // setup tags
-              if(!opt.dot?.semver?.disable?.rolling){
+              if(!opt.dot?.semver?.disable?.rolling && !opt.input.etc?.semver?.disable?.rolling){
                 docker.image.tags.push('rolling');
               }
               if(opt.input?.etc?.dockerfile !== 'arch.dockerfile' && opt.input?.etc?.tag){
-                docker.image.tags.push(`${context.sha.substring(0,7)}`);
                 docker.image.tags.push(opt.input.etc.tag);
                 docker.image.tags.push(`${opt.input.etc.tag}-${docker.app.version}`);
                 docker.cache.name = `${docker.image.name}:buildcache-${opt.input.etc.tag}`;
               }else if(docker.app.version !== 'latest'){
                 const semver = docker.app.version.split('.');
-                docker.image.tags.push(`${context.sha.substring(0,7)}`);
                 if(Array.isArray(semver)){
                   if(semver.length >= 1) docker.image.tags.push(`${semver[0]}`);
                   if(semver.length >= 2) docker.image.tags.push(`${semver[0]}.${semver[1]}`);
@@ -181,7 +179,7 @@ jobs:
                 docker.tags.push(`${docker.image.name}:${docker.image.prefix}${tag}${docker.image.suffix}`);
                 docker.tags.push(`ghcr.io/${docker.image.name}:${docker.image.prefix}${tag}${docker.image.suffix}`);
                 docker.tags.push(`quay.io/${docker.image.name}:${docker.image.prefix}${tag}${docker.image.suffix}`);
-                docker.tags_no_registry.push(`${docker.image.name}:${docker.image.prefix}${tag}${docker.image.suffix}`);
+                docker.merge_tags.push(`${docker.image.prefix}${tag}${docker.image.suffix}`);
               }
 
             // setup build arguments
@@ -207,7 +205,7 @@ jobs:
 
               core.exportVariable('DOCKER_IMAGE_NAME', docker.image.name);
               core.exportVariable('DOCKER_IMAGE_TAGS', docker.tags.join(','));
-              core.exportVariable('DOCKER_IMAGE_TAGS_NO_REGISTRY', docker.tags_no_registry.join(','));
+              core.exportVariable('DOCKER_IMAGE_MERGE_TAGS', `'["${docker.merge_tags.join(`","`)}"]`);
               core.exportVariable('DOCKER_IMAGE_DESCRIPTION', docker.image.description);
               core.exportVariable('DOCKER_IMAGE_ARGUMENTS', arguments.join("\r\n"));
               core.exportVariable('DOCKER_IMAGE_DOCKERFILE', opt.input?.etc?.dockerfile || 'arch.dockerfile');
@@ -228,7 +226,7 @@ jobs:
         id: setup-environment
         run: |
           echo "DOCKER_IMAGE_NAME=${{ env.DOCKER_IMAGE_NAME }}" >> $GITHUB_OUTPUT
-          echo "DOCKER_IMAGE_TAGS_NO_REGISTRY=${{ env.DOCKER_IMAGE_TAGS_NO_REGISTRY }}" >> $GITHUB_OUTPUT
+          echo "DOCKER_IMAGE_MERGE_TAGS=${{ env.DOCKER_IMAGE_MERGE_TAGS }}" >> $GITHUB_OUTPUT
 
 
       # ╔═════════════════════════════════════════════════════╗
@@ -479,10 +477,10 @@ jobs:
       fail-fast: false
       matrix:
         registry: [docker.io, ghcr.io, quay.io]
+        tags: ${{ fromJSON(needs.docker.outputs.DOCKER_IMAGE_MERGE_TAGS)}}
     
     env:
       DOCKER_IMAGE_NAME: ${{ needs.docker.outputs.DOCKER_IMAGE_NAME }}
-      DOCKER_IMAGE_TAGS_NO_REGISTRY: ${{ needs.docker.outputs.DOCKER_IMAGE_TAGS_NO_REGISTRY }}
 
     permissions:
       contents: read

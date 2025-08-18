@@ -33,7 +33,8 @@ jobs:
             const etc = {
               dockerfile:"upx.dockerfile",
               tag:"upx",
-              version:"${{ env.LATEST_VERSION }}"
+              version:"${{ env.LATEST_VERSION }}",
+              semver:{disable:{rolling: true}}
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
