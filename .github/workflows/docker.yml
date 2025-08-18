@@ -63,10 +63,12 @@ jobs:
           - 5000:5000
 
     permissions:
-      contents: read
+      actions: read
+      contents: write
       packages: write
       attestations: write
       id-token: write
+      security-events: write
 
     steps:
       # ╔═════════════════════════════════════════════════════╗
