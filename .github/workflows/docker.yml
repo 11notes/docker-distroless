@@ -30,10 +30,14 @@ on:
         description: 'set WORKFLOW_GITHUB_README'
         required: false
         default: 'false'
-        
+
       etc:
         description: 'base64 encoded json string'
         required: false
+
+env:
+  DOCKER_IMAGE_NAME: ""
+  DOCKER_IMAGE_TAGS_NO_REGISTRY: ""
 
 jobs:
   docker:
@@ -268,7 +272,7 @@ jobs:
       - name: container image / build
         if: env.WORKFLOW_BUILD == 'true'
         id: image-build
-        uses: docker/build-push-action@67a2d409c0a876cbe6b11854e3e25193efe4e62d
+        uses: docker/build-push-action@55146d969b0dff1a5c12630229609757af5b1081
         with:
           context: .
           file: ${{ env.DOCKER_IMAGE_DOCKERFILE }}
@@ -285,7 +289,7 @@ jobs:
       - name: container image / scan with grype
         if: env.WORKFLOW_BUILD == 'true'
         id: grype
-        uses: anchore/scan-action@dc6246fcaf83ae86fcc6010b9824c30d7320729e
+        uses: anchore/scan-action@d5c127d5807a08a21a8bbb603b25e0fbd38cf9d4
         with:
           image: ${{ env.DOCKER_CACHE_GRYPE }}
           fail-build: ${{ env.WORKFLOW_GRYPE_FAIL_ON_SEVERITY }}
@@ -297,7 +301,7 @@ jobs:
       # OUTPUT CVE REPORT IF SCAN FAILS
       - name: container image / scan with grype FAILED
         if: env.WORKFLOW_BUILD == 'true' && (failure() || steps.grype.outcome == 'failure') && steps.image-build.outcome == 'success'
-        uses: anchore/scan-action@dc6246fcaf83ae86fcc6010b9824c30d7320729e
+        uses: anchore/scan-action@d5c127d5807a08a21a8bbb603b25e0fbd38cf9d4
         with:
           image: ${{ env.DOCKER_CACHE_GRYPE }}
           fail-build: false
@@ -310,7 +314,7 @@ jobs:
       - name: container image / push to registries
         id: image-push
         if: env.WORKFLOW_BUILD == 'true'
-        uses: docker/build-push-action@67a2d409c0a876cbe6b11854e3e25193efe4e62d
+        uses: docker/build-push-action@55146d969b0dff1a5c12630229609757af5b1081
         with:
           context: .
           file: ${{ env.DOCKER_IMAGE_DOCKERFILE }}
