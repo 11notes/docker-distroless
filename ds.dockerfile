@@ -1,14 +1,17 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                       SETUP                         ║
 # ╚═════════════════════════════════════════════════════╝
-  # GLOBAL
+# GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
       BUILD_SRC=https://github.com/11notes/go-ds.git \
       BUILD_ROOT=/go/go-ds
   ARG BUILD_BIN=${BUILD_ROOT}/ds
 
-  
+# :: FOREIGN IMAGES
+  FROM 11notes/distroless:upx AS distroless-upx
+
+
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
@@ -55,6 +58,7 @@
         APP_ROOT=${APP_ROOT}
 
   # :: multi-stage
+    COPY --from=distroless-upx / /
     COPY --from=build ${APP_ROOT}/ /
 
 # :: EXECUTE
