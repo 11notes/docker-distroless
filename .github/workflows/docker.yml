@@ -359,6 +359,7 @@ jobs:
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
+          no-cache: ${{ env.WORKFLOW_BUILD_NO_CACHE }}
           file: ${{ env.DOCKER_IMAGE_DOCKERFILE }}
           push: true
           sbom: true
