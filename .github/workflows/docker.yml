@@ -183,7 +183,7 @@ jobs:
               },
               cache:{
                 registry:'localhost:5000/',
-                disable:(opt.input?.etc?.build?.cache || false),
+                enable:(opt.input?.etc?.build?.cache || true),
               },
               tags:[],
               merge_tags:[],
@@ -256,7 +256,7 @@ jobs:
 
               core.exportVariable('WORKFLOW_BUILD', docker.image.build);
               core.setOutput('WORKFLOW_BUILD', docker.image.build);
-              core.exportVariable('WORKFLOW_BUILD_NO_CACHE', docker.cache.disable);
+              core.exportVariable('WORKFLOW_BUILD_NO_CACHE', !docker.cache.enable);
 
               core.exportVariable('WORKFLOW_CREATE_RELEASE', (opt.input?.release === undefined) ? false : opt.input.release);
               core.exportVariable('WORKFLOW_CREATE_README', (opt.input?.readme === undefined) ? false : opt.input.readme);
