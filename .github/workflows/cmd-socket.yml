@@ -17,7 +17,8 @@ jobs:
               dockerfile:"cmd-socket.dockerfile",
               tag:"cmd-socket",
               version:"latest",
-              semver:{disable:{rolling: true}}
+              semver:{disable:{rolling: true}},
+              build:{cache:false},
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
 

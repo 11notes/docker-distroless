@@ -170,6 +170,10 @@ jobs:
                   sanitized:"${{ matrix.platform }}".replace(/[^A-Z-a-z0-9]+/i, ""),
                 },
                 tags:[],
+                build:{
+                  workflow:(opt.input?.build === undefined) ? false : opt.input.build,
+                  cache:(opt.input?.etc?.build.cache || true),
+                }
               },
               app:{
                 image:opt.dot.image,
@@ -252,8 +256,10 @@ jobs:
               core.exportVariable('DOCKER_IMAGE_PLATFORM_SANITIZED', docker.image.platform.sanitized);
               core.exportVariable('DOCKER_IMAGE_NAME_AND_VERSION', `${docker.image.name}:${docker.app.version}`);
 
-              core.exportVariable('WORKFLOW_BUILD', (opt.input?.build === undefined) ? false : opt.input.build);
-              core.setOutput('WORKFLOW_BUILD', (opt.input?.build === undefined) ? false : opt.input.build);
+              core.exportVariable('WORKFLOW_BUILD', docker.image.build.workflow);
+              core.setOutput('WORKFLOW_BUILD', docker.image.build.workflow);
+              core.exportVariable('WORKFLOW_BUILD_NO_CACHE', !docker.image.build.cache);
+
               core.exportVariable('WORKFLOW_CREATE_RELEASE', (opt.input?.release === undefined) ? false : opt.input.release);
               core.exportVariable('WORKFLOW_CREATE_README', (opt.input?.readme === undefined) ? false : opt.input.readme);
               core.exportVariable('WORKFLOW_GRYPE_FAIL_ON_SEVERITY', (opt.dot?.grype?.fail === undefined) ? true : opt.dot.grype.fail);
@@ -312,6 +318,7 @@ jobs:
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
+          no-cache: ${{ env.WORKFLOW_BUILD_NO_CACHE }}
           file: ${{ env.DOCKER_IMAGE_DOCKERFILE }}
           push: true
           platforms: linux/${{ matrix.platform }}
