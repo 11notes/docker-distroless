@@ -1,6 +1,12 @@
 name: upx
 on:
   workflow_dispatch:
+    inputs:
+      force:
+        description: 'overwrite any existing tags'
+        type: string
+        required: false
+        default: 'false'
   schedule:
     - cron: "0 5 * * *"
   push:
@@ -14,11 +20,18 @@ jobs:
         run: |
           LATEST_VERSION=$(curl -s https://api.github.com/repos/upx/upx/releases/latest | jq -r '.tag_name' | sed 's/v//')   
           if [ "${LATEST_VERSION}" != "null" ]; then
-            if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/upx-${LATEST_VERSION}; then
-              echo "tag ${LATEST_VERSION} exists already!"
-            else
+            if [ "${{ github.event.inputs.force }}" == "true" ]; then
               echo "WORKFLOW_AUTO_UPDATE=true" >> "${GITHUB_ENV}"
               echo "LATEST_VERSION=${LATEST_VERSION}" >> "${GITHUB_ENV}"
+              echo "overwrite tag ${LATEST_VERSION}"
+            else
+              if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/upx-${LATEST_VERSION}; then
+                echo "tag ${LATEST_VERSION} exists already!"
+              else
+                echo "WORKFLOW_AUTO_UPDATE=true" >> "${GITHUB_ENV}"
+                echo "LATEST_VERSION=${LATEST_VERSION}" >> "${GITHUB_ENV}"
+                echo "update tag ${LATEST_VERSION}"
+              fi
             fi
           else
             echo "tag ${LATEST_VERSION} is null!"
