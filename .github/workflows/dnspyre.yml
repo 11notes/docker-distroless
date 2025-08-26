@@ -20,7 +20,7 @@ jobs:
           LATEST_VERSION=$(curl -s https://api.github.com/repos/Tantalor93/dnspyre/releases/latest | jq -r '.tag_name' | sed 's/v//')
           if [ "${LATEST_VERSION}" != "null" ]; then
             if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/dnspyre-${LATEST_VERSION}; then
-              if [ "${${{ github.event.inputs.force }}}" == "true" ]; then
+              if [ "${{ github.event.inputs.force }}" == "true" ]; then
                 echo "WORKFLOW_AUTO_UPDATE=true" >> "${GITHUB_ENV}"
                 echo "LATEST_VERSION=${LATEST_VERSION}" >> "${GITHUB_ENV}"
               else
