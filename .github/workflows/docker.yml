@@ -181,7 +181,7 @@ jobs:
               },
               cache:{
                 registry:'localhost:5000/',
-                enable:(opt.input?.etc?.build?.cache || true),
+                enable:(opt.input?.etc?.cache === undefined) ? true : opt.input.etc.cache,
               },
               tags:[],
               merge_tags:[],
@@ -191,7 +191,6 @@ jobs:
             docker.cache.grype = `${docker.cache.registry}${docker.image.name}:${docker.image.prefix}grype${docker.image.suffix}`;
             docker.app.prefix = docker.image.prefix;
             docker.app.suffix = docker.image.suffix;
-            docker.cache.disable = (docker.cache.enable) ? false : true;
 
             // setup tags
               if(!opt.dot?.semver?.disable?.rolling && !opt.input.etc?.semver?.disable?.rolling){
@@ -255,7 +254,7 @@ jobs:
 
               core.exportVariable('WORKFLOW_BUILD', docker.image.build);
               core.setOutput('WORKFLOW_BUILD', docker.image.build);
-              core.exportVariable('WORKFLOW_BUILD_NO_CACHE', docker.cache.disable);
+              core.exportVariable('WORKFLOW_BUILD_NO_CACHE', !docker.cache.enable);
 
               core.exportVariable('WORKFLOW_CREATE_RELEASE', (opt.input?.release === undefined) ? false : opt.input.release);
               core.exportVariable('WORKFLOW_CREATE_README', (opt.input?.readme === undefined) ? false : opt.input.readme);
