@@ -157,8 +157,6 @@ jobs:
               core.setFailed(e);
             }
 
-            core.info(inspect(opt, {showHidden:false, depth:null, colors:true}));
-
             const docker = {
               image:{
                 name:opt.dot.image,
@@ -193,6 +191,7 @@ jobs:
             docker.cache.grype = `${docker.cache.registry}${docker.image.name}:${docker.image.prefix}grype${docker.image.suffix}`;
             docker.app.prefix = docker.image.prefix;
             docker.app.suffix = docker.image.suffix;
+            docker.cache.disable = !docker.cache.disable;
 
             // setup tags
               if(!opt.dot?.semver?.disable?.rolling && !opt.input.etc?.semver?.disable?.rolling){
@@ -256,12 +255,15 @@ jobs:
 
               core.exportVariable('WORKFLOW_BUILD', docker.image.build);
               core.setOutput('WORKFLOW_BUILD', docker.image.build);
-              core.exportVariable('WORKFLOW_BUILD_NO_CACHE', !docker.cache.disable);
+              core.exportVariable('WORKFLOW_BUILD_NO_CACHE', docker.cache.disable);
 
               core.exportVariable('WORKFLOW_CREATE_RELEASE', (opt.input?.release === undefined) ? false : opt.input.release);
               core.exportVariable('WORKFLOW_CREATE_README', (opt.input?.readme === undefined) ? false : opt.input.readme);
               core.exportVariable('WORKFLOW_GRYPE_FAIL_ON_SEVERITY', (opt.dot?.grype?.fail === undefined) ? true : opt.dot.grype.fail);
               core.exportVariable('WORKFLOW_GRYPE_SEVERITY_CUTOFF', (opt.dot?.grype?.severity || 'high'));
+
+            // print
+              core.info(inspect({opt:opt, docker:docker}, {showHidden:false, depth:null, colors:true}));
 
 
       # ╔═════════════════════════════════════════════════════╗
