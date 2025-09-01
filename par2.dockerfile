@@ -1,21 +1,21 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                       SETUP                         ║
 # ╚═════════════════════════════════════════════════════╝
-  # GLOBAL
+# GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
       BUILD_SRC=https://github.com/animetosho/par2cmdline-turbo \
       BUILD_ROOT=/par2cmdline-turbo
   ARG BUILD_BIN=${BUILD_ROOT}/par2
 
-  # :: FOREIGN IMAGES
+# :: FOREIGN IMAGES
   FROM 11notes/util:bin AS util-bin
 
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
-  # :: PAR2
+# :: PAR2
   FROM alpine AS build
   COPY --from=util-bin / /
   ARG APP_VERSION \
@@ -51,7 +51,7 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
 # ╚═════════════════════════════════════════════════════╝
-  # :: HEADER
+# :: HEADER
   FROM scratch
 
   # :: default arguments
