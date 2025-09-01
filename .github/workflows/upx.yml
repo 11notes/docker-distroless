@@ -37,7 +37,7 @@ jobs:
             echo "WORKFLOW_AUTO_UPDATE=true" >> "${GITHUB_ENV}"
             echo "[success] image will be forcefully updated!"
           else
-            if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/upx-${LATEST_VERSION}; then
+            if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/upx-${{ env.APP_VERSION }}; then
               echo "[fail] tag ${{ env.APP_VERSION }} exist already."
             else
               echo "WORKFLOW_AUTO_UPDATE=true" >> "${GITHUB_ENV}"
