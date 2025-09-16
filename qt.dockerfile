@@ -62,8 +62,6 @@
           linux-x32 \
           -static \
           --openssldir=/etc/ssl; \
-        export CFLAG="${CFLAG} -Wall -O3 -pthread -mx32 -DL_ENDIAN"; \
-        export SHARED_CFLAG="${SHARED_CFLAG} -fPIC"; \
       ;; \
     esac; \
     make -s -j $(nproc) 2>&1 > /dev/null; \
