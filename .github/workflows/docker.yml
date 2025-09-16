@@ -82,7 +82,9 @@ jobs:
             }
 
             const platforms = (
-              (opt.dot?.platform) ? opt.dot.platform.split(",") : "${{ github.event.inputs.platform }}".split(",")
+              ("${{ github.event.inputs.platform }}" != "amd64,arm64,arm/v7") ? "${{ github.event.inputs.platform }}".split(",") : (
+                (opt.dot?.platform) ? opt.dot.platform.split(",") : "${{ github.event.inputs.platform }}".split(",")
+              )
             );
 
             const matrix = {include:[]};
