@@ -37,9 +37,6 @@
       mesa-dev;
 
   RUN set -ex; \
-    eleven git clone ${BUILD_SRC} v${APP_VERSION};
-
-  RUN set -ex; \
     eleven github asset openssl/openssl ${APP_OPENSSL_VERSION} ${APP_OPENSSL_VERSION}.tar.gz;
 
   RUN set -ex; \
@@ -59,13 +56,16 @@
       \
       "armv7") \
         ./Configure \
-          -march=armv7 \
+          linux-generic32 \
           -static \
           --openssldir=/etc/ssl; \
       ;; \
     esac; \
     make -s -j $(nproc) 2>&1 > /dev/null; \
     make -s -j $(nproc) install_sw 2>&1 > /dev/null;
+
+  RUN set -ex; \
+    eleven git clone ${BUILD_SRC} v${APP_VERSION};
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
