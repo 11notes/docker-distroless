@@ -13,6 +13,7 @@ jobs:
       - name: cron-update / get latest version
         run: |
           LATEST_VERSION=$(curl -s https://api.github.com/repos/qt/qtbase/tags | jq -r ['.[].name | select(test("^v[0-9].[0-9].[0-9]$")) '][0] | sed 's/v//')
+          echo "OPENSSL_LATEST_VERSION=$(curl -s https://api.github.com/repos/openssl/openssl/releases/latest | jq -r '.tag_name' | sed 's/v//')" >> "${GITHUB_ENV}"
           if [ "${LATEST_VERSION}" != "null" ]; then
             if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/qt-${LATEST_VERSION}; then
               echo "tag ${LATEST_VERSION} exists already!"
@@ -34,7 +35,13 @@ jobs:
               dockerfile:"qt.dockerfile",
               tag:"qt",
               version:"${{ env.LATEST_VERSION }}",
-              semver:{disable:{rolling: true}}
+              semver:{disable:{rolling: true}},
+              build:{
+                args:{
+                  OPENSSL_VERSION:${{ env.OPENSSL_LATEST_VERSION }}
+                  QT_CONFIGURATION:'normal',
+                }
+              },
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
@@ -46,3 +53,32 @@ jobs:
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
           inputs: '{ "release":"false", "readme":"false", "run-name":"qt", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
+
+      - name: init / base64 nested json
+        if: env.WORKFLOW_AUTO_UPDATE == 'true'
+        uses: actions/github-script@62c3794a3eb6788d9a2a72b219504732c0c9a298
+        with:
+          script: |
+            const { Buffer } = require('node:buffer');
+            const etc = {
+              dockerfile:"qt.dockerfile",
+              tag:"qt-minimal",
+              version:"${{ env.LATEST_VERSION }}",
+              semver:{disable:{rolling: true}},
+              build:{
+                args:{
+                  OPENSSL_VERSION:${{ env.OPENSSL_LATEST_VERSION }}
+                  QT_CONFIGURATION:'minimal',
+                }
+              },
+            };
+            core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
+
+      - name: build docker image
+        if: env.WORKFLOW_AUTO_UPDATE == 'true'
+        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
+        with:
+          wait-for-completion: false
+          workflow: docker.yml
+          token: "${{ secrets.REPOSITORY_TOKEN }}"
+          inputs: '{ "release":"false", "readme":"false", "run-name":"qt-minimal", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'

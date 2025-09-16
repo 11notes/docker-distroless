@@ -4,6 +4,7 @@
 # GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
+      APP_QT_CONFIGURATION=normal \
       BUILD_SRC=qt/qtbase.git \
       BUILD_ROOT=/qtbase
 
@@ -19,6 +20,8 @@
   COPY --from=util-bin / /
   ARG APP_VERSION \
       APP_ROOT \
+      APP_QT_CONFIGURATION \
+      APP_OPENSSL_VERSION \
       BUILD_SRC \
       BUILD_ROOT \
       BUILD_BIN
@@ -35,15 +38,59 @@
     eleven git clone ${BUILD_SRC} v${APP_VERSION};
 
   RUN set -ex; \
-    cd ${BUILD_ROOT}; \
-    ./configure \
+    eleven github asset openssl/openssl ${APP_OPENSSL_VERSION} ${APP_OPENSSL_VERSION}.tar.gz;
+
+  RUN set -ex; \
+    apk --update --no-cache add \
+      perl \
+      make \
+      linux-headers;
+
+  RUN set -ex; \
+    cd /${APP_OPENSSL_VERSION}; \
+    ./Configure \
       -static \
-      -release \
-      -no-pch \
-      -prefix "/qt" \
-      -nomake tools \
-      -nomake tests \
-      -nomake examples
+      --openssldir=/etc/ssl; \
+    make -s -j $(nproc) 2>&1 > /dev/null; \
+    make -s -j $(nproc) install_sw 2>&1 > /dev/null;
+
+  RUN set -ex; \
+    cd ${BUILD_ROOT}; \
+    case "${APP_QT_CONFIGURATION}" in \
+      "normal") \
+        ./configure \
+          -static \
+          -release \
+          -no-pch \
+          -prefix "/qt" \
+          -nomake tests \
+          -nomake examples \
+          -no-feature-testlib \
+          -openssl \
+          -openssl-linked \
+          -optimize-size \
+          -feature-optimize_full; \
+      ;; \
+      \
+      "minimal") \
+        ./configure \
+          -static \
+          -release \
+          -no-pch \
+          -prefix "/qt" \
+          -nomake tests \
+          -nomake examples \
+          -no-feature-testlib \
+          -no-gui \
+          -no-dbus \
+          -no-widgets \
+          -no-feature-animation \
+          -openssl \
+          -openssl-linked \
+          -optimize-size \
+          -feature-optimize_full; \
+      ;; \
+    esac;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
