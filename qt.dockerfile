@@ -75,7 +75,6 @@
           -static \
           -release \
           -prefix "/opt/qt" \
-          -qt-host-path "/usr/src/qt-host/${APP_VERSION}/gcc_64/" \
           -c++std c++17 \
           -nomake tests \
           -nomake examples \
@@ -91,7 +90,6 @@
           -static \
           -release \
           -prefix "/opt/qt" \
-          -qt-host-path "/usr/src/qt-host/${APP_VERSION}/gcc_64/" \
           -c++std c++17 \
           -nomake tests \
           -nomake examples \
