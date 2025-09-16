@@ -74,8 +74,9 @@
         ./configure \
           -static \
           -release \
-          -no-pch \
-          -prefix "/qt" \
+          -prefix "/opt/qt" \
+          -qt-host-path "/usr/src/qt-host/${APP_VERSION}/gcc_64/" \
+          -c++std c++17 \
           -nomake tests \
           -nomake examples \
           -no-feature-testlib \
@@ -89,8 +90,9 @@
         ./configure \
           -static \
           -release \
-          -no-pch \
-          -prefix "/qt" \
+          -prefix "/opt/qt" \
+          -qt-host-path "/usr/src/qt-host/${APP_VERSION}/gcc_64/" \
+          -c++std c++17 \
           -nomake tests \
           -nomake examples \
           -no-feature-testlib \
@@ -140,5 +142,5 @@
 
 # :: EXECUTE
   USER ${APP_UID}:${APP_GID}
-  ENTRYPOINT ["/qt/bin/qmake"]
+  ENTRYPOINT ["/opt/qt/bin/qmake"]
   CMD ["--version"]
