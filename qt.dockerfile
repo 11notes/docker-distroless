@@ -22,6 +22,7 @@
       APP_ROOT \
       APP_QT_CONFIGURATION \
       APP_OPENSSL_VERSION \
+      TARGETARCH \
       TARGETVARIANT \
       BUILD_SRC \
       BUILD_ROOT \
