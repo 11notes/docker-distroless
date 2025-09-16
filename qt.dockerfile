@@ -136,7 +136,7 @@
         APP_ROOT=${APP_ROOT}
 
   # :: multi-stage
-    COPY --from=build /qt /qt
+    COPY --from=build /opt/qt /opt/qt
 
 # :: EXECUTE
   USER ${APP_UID}:${APP_GID}
