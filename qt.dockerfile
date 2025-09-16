@@ -22,6 +22,7 @@
       APP_ROOT \
       APP_QT_CONFIGURATION \
       APP_OPENSSL_VERSION \
+      TARGETVARIANT \
       BUILD_SRC \
       BUILD_ROOT \
       BUILD_BIN
@@ -48,9 +49,22 @@
 
   RUN set -ex; \
     cd /${APP_OPENSSL_VERSION}; \
-    ./Configure \
-      -static \
-      --openssldir=/etc/ssl; \
+    case "${TARGETARCH}${TARGETVARIANT}" in \
+      "amd64"|"arm64") \
+        ./Configure \
+          -static \
+          --openssldir=/etc/ssl; \
+      ;; \
+      \
+      "armv7") \
+        ./Configure \
+          linux-x32 \
+          -static \
+          --openssldir=/etc/ssl; \
+        export CFLAG=${CFLAG} -Wall -O3 -pthread -mx32 -DL_ENDIAN; \
+        export SHARED_CFLAG=${SHARED_CFLAG} -fPIC; \
+      ;; \
+    esac; \
     make -s -j $(nproc) 2>&1 > /dev/null; \
     make -s -j $(nproc) install_sw 2>&1 > /dev/null;
 
