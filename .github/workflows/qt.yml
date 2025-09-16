@@ -38,7 +38,7 @@ jobs:
               semver:{disable:{rolling: true}},
               build:{
                 args:{
-                  OPENSSL_VERSION:${{ env.OPENSSL_LATEST_VERSION }}
+                  OPENSSL_VERSION:'${{ env.OPENSSL_LATEST_VERSION }}',
                   QT_CONFIGURATION:'normal',
                 }
               },
@@ -67,7 +67,7 @@ jobs:
               semver:{disable:{rolling: true}},
               build:{
                 args:{
-                  OPENSSL_VERSION:${{ env.OPENSSL_LATEST_VERSION }}
+                  OPENSSL_VERSION:'${{ env.OPENSSL_LATEST_VERSION }}',
                   QT_CONFIGURATION:'minimal',
                 }
               },
