@@ -59,8 +59,7 @@
       \
       "armv7") \
         ./Configure \
-          -m32 \
-          linux-generic32 \
+          -march=armv7 \
           -static \
           --openssldir=/etc/ssl; \
       ;; \
