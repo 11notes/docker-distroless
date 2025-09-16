@@ -343,7 +343,7 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       # SETUP QEMU
       - name: container image / setup qemu
-        if: env.WORKFLOW_BUILD == 'true'
+        if: env.WORKFLOW_BUILD == 'true' && matrix.platform == 'arm/v7'
         uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
         with:
           image: tonistiigi/binfmt:qemu-v8.1.5
