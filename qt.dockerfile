@@ -59,7 +59,8 @@
       \
       "armv7") \
         ./Configure \
-          linux-x32 \
+          -m32 \
+          linux-generic32 \
           -static \
           --openssldir=/etc/ssl; \
       ;; \
