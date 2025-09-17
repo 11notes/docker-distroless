@@ -34,7 +34,7 @@
       tcl-dev;
 
   RUN set -ex; \
-    eleven git clone ${BUILD_SRC} v${APP_VERSION};
+    git clone --recurse-submodules -j8 ${BUILD_SRC} -b v${APP_VERSION};
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
