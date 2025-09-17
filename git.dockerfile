@@ -4,7 +4,7 @@
 # GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
-      BUILD_SRC=git/git.git \
+      BUILD_SRC=https://github.com/git/git.git \
       BUILD_ROOT=/git
   ARG BUILD_BIN=${BUILD_ROOT}/git
 
