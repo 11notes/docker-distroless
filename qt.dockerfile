@@ -37,7 +37,7 @@
       mesa-dev;
 
   RUN set -ex; \
-    eleven github asset openssl/openssl ${APP_OPENSSL_VERSION} ${APP_OPENSSL_VERSION}.tar.gz;
+    eleven github asset openssl/openssl openssl-${APP_OPENSSL_VERSION} openssl-${APP_OPENSSL_VERSION}.tar.gz;
 
   RUN set -ex; \
     apk --update --no-cache add \
@@ -46,7 +46,7 @@
       linux-headers;
 
   RUN set -ex; \
-    cd /${APP_OPENSSL_VERSION}; \
+    cd /openssl-${APP_OPENSSL_VERSION}; \
     case "${TARGETARCH}${TARGETVARIANT}" in \
       "amd64"|"arm64") \
         ./Configure \
@@ -109,6 +109,25 @@
     cd ${BUILD_ROOT}; \
     cmake --build . --parallel; \
     cmake --install .;
+
+  RUN set -ex; \
+    eleven git clone qt/qttools.git v${APP_VERSION};
+
+  RUN set -ex; \
+    cd /qttools; \
+    cmake -Wno-dev -B build -G Ninja \
+      -DCMAKE_BUILD_TYPE="Release" \
+      -DCMAKE_INSTALL_PREFIX="/opt/qt" \
+      -DCMAKE_CXX_STANDARD=17 \
+      -DCMAKE_PREFIX_PATH="/opt/qt" \
+      -DCMAKE_EXE_LINKER_FLAGS="-static" \
+      -DBUILD_SHARED_LIBS=OFF;
+
+  RUN set -ex; \
+    cd /qttools; \
+    cmake --build build; \
+    cmake --install build;
+
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
