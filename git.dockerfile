@@ -26,6 +26,7 @@
 
   RUN set -ex; \
     apk --no-cache --update add \
+      g++ \
       autoconf \
       automake \
       make \
