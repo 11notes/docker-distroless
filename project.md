@@ -20,8 +20,12 @@ ${{ content_synopsis }} This image and its different layers can be used to build
 
 # CONTAINER HELPERS
 * [11notes/distroless:cmd-socket](https://github.com/11notes/go-cmd-socket) - cmd-socket
+* [11notes/distroless:localhealth](https://github.com/11notes/docker-distroless/blob/master/localhealth.dockerfile) - localhealth
 
-There are also application services, that are distroless, but don’t serve well as a base layer or only for people who know how to handle them, these are:
+# CONTAINER BUILD ENVIRONMENTS
+* [11notes/distroless:qt](https://github.com/11notes/docker-distroless/blob/master/qt.dockerfile) - Qt (with GUI or withouth as -minimal)
+
+There are also application services, that are distroless, but don’t serve well as a base layer or only for user who know how to handle them, these are:
 
 # APPLICATION SERVICES WITH THEIR OWN IMAGES
 * [11notes/socket-proxy](https://github.com/11notes/docker-socket-proxy) - socket-proxy
@@ -39,6 +43,10 @@ There are also application services, that are distroless, but don’t serve well
 * [11notes/qbittorrent](https://github.com/11notes/docker-qbittorrent) - qbittorrent
 * [11notes/tinyauth](https://github.com/11notes/docker-tinyauth) - tinyauth
 * [11notes/redis](https://github.com/11notes/docker-redis) - redis
+* [11notes/whodb](https://github.com/11notes/docker-whodb) - whodb
+* [11notes/syncthing](https://github.com/11notes/docker-syncthing) - syncthing
+* [11notes/express](https://github.com/11notes/docker-express) - express
+* [11notes/prometheus](https://github.com/11notes/docker-prometheuss) - prometheus
 
 ${{ content_build }}
 
