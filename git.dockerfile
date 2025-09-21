@@ -40,9 +40,10 @@
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
     make configure; \
-    ./configure \
-      CFLAGS="${CFLAGS} -static"; \
-    make -s -j $(nproc) V=1 LDFLAGS="--static" 2>&1 > /dev/null;
+    CFLAGS="-static -L/usr/local/lib -lcurl -lnghttp2 -lssl -lcrypto -ldl -pthread -lz -lssl -lcrypto -ldl -pthread -lz -lz -lssl -lcrypto -ldl -pthread -lnghttp2" \
+      ./configure \
+        --with-curl; \
+    make -s -j $(nproc) 2>&1 > /dev/null;
 
   RUN set -ex; \
     eleven distroless ${BUILD_BIN};
