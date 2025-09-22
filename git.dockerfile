@@ -22,6 +22,7 @@
   COPY --from=util-bin / /
 
   ARG APP_VERSION \
+      APP_ROOT \
       TARGETARCH \
       TARGETVARIANT \
       DEP_OPENSSL_VERSION \
@@ -334,6 +335,7 @@
       ln -sf /usr/local/bin/git-submodule ${APP_ROOT}/opt/git/git-submodule; \
       ln -sf /usr/local/bin/git-web--browse ${APP_ROOT}/opt/git/git-web--browse;
 
+      
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
 # ╚═════════════════════════════════════════════════════╝
