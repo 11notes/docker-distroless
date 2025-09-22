@@ -54,8 +54,7 @@
 
   RUN set -ex; \
     wget -q --show-progress --progress=bar:force ${BUILD_SRC}; \
-    wget -q --show-progress --progress=bar:force ${BUILD_SRC}.asc; \
-    pv curl-${APP_VERSION}.tar.gz | tar xz;
+    wget -q --show-progress --progress=bar:force ${BUILD_SRC}.asc;
 
   RUN set -ex; \
     gpg --verify ${BUILD_TAR}.asc ${BUILD_TAR}; \
