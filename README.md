@@ -28,8 +28,12 @@ Build your own distroless images with this mini file system and some binaries
 
 # CONTAINER HELPERS
 * [11notes/distroless:cmd-socket](https://github.com/11notes/go-cmd-socket) - cmd-socket
+* [11notes/distroless:localhealth](https://github.com/11notes/docker-distroless/blob/master/localhealth.dockerfile) - localhealth
 
-There are also application services, that are distroless, but don’t serve well as a base layer or only for people who know how to handle them, these are:
+# CONTAINER BUILD ENVIRONMENTS
+* [11notes/distroless:qt](https://github.com/11notes/docker-distroless/blob/master/qt.dockerfile) - Qt (with GUI or withouth as -minimal)
+
+There are also application services, that are distroless, but don’t serve well as a base layer or only for user who know how to handle them, these are:
 
 # APPLICATION SERVICES WITH THEIR OWN IMAGES
 * [11notes/socket-proxy](https://github.com/11notes/docker-socket-proxy) - socket-proxy
@@ -47,6 +51,10 @@ There are also application services, that are distroless, but don’t serve well
 * [11notes/qbittorrent](https://github.com/11notes/docker-qbittorrent) - qbittorrent
 * [11notes/tinyauth](https://github.com/11notes/docker-tinyauth) - tinyauth
 * [11notes/redis](https://github.com/11notes/docker-redis) - redis
+* [11notes/whodb](https://github.com/11notes/docker-whodb) - whodb
+* [11notes/syncthing](https://github.com/11notes/docker-syncthing) - syncthing
+* [11notes/express](https://github.com/11notes/docker-express) - express
+* [11notes/prometheus](https://github.com/11notes/docker-prometheuss) - prometheus
 
 # BUILD 🚧
 ```yaml
@@ -76,4 +84,4 @@ docker pull quay.io/11notes/distroless:latest
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-distroless/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-distroless/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-distroless/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 17.09.2025, 11:20:23 (CET)*
+*created 22.09.2025, 06:48:26 (CET)*
