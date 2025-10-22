@@ -61,6 +61,10 @@
   RUN set -ex; \
     eleven distroless /openssl-${APP_VERSION}/apps/openssl;
 
+  RUN set -ex; \
+    mkdir -p ${APP_ROOT}/etc/ssl; \
+    cp /openssl-${APP_VERSION}/apps/openssl.cnf ${APP_ROOT}/etc/ssl;
+
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
