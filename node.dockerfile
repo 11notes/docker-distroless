@@ -19,7 +19,7 @@
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
 # :: NODE
-  FROM alpine AS build
+  FROM alpine:edge AS build
   ARG TARGETARCH \
       APP_ROOT \
       APP_VERSION \
