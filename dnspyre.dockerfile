@@ -9,7 +9,7 @@
   ARG BUILD_BIN=${BUILD_ROOT}/dnspyre
 
 # :: FOREIGN IMAGES
-  FROM 11notes/distroless AS distroless  
+  FROM 11notes/distroless AS distroless
   
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
