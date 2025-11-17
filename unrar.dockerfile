@@ -9,7 +9,7 @@
   ARG BUILD_TAR=unrarsrc-${APP_VERSION}.tar.gz
   ARG BUILD_BIN=${BUILD_ROOT}/unrar \
       BUILD_SRC=https://www.rarlab.com/rar/${BUILD_TAR} \
-      SHA256_SUM=2e9cbc9d1c250b40f4a7a6a363b6ccfa3703e190534979d18c8c4ac5ae35dafc
+      SHA256_SUM=3fe3b4d710da45521625353dc2e023dad48c010f02a93302756e1061a8f3ae8e
 
   # :: FOREIGN IMAGES
   FROM 11notes/util:bin AS util-bin     
