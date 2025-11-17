@@ -49,7 +49,7 @@ jobs:
           wait-for-completion: false
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"false", "run-name":"node-stable", "etc":"${{ env.WORKFLOW_BASE64JSON_STABLE }}" }'
+          inputs: '{ "release":"false", "readme":"false", "run-name":"node-stable", "platform":"amd64,arm64", "etc":"${{ env.WORKFLOW_BASE64JSON_STABLE }}" }'
 
       # ╔═════════════════════════════════════════════════════╗
       # ║                       LATEST                        ║
