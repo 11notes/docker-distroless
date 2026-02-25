@@ -75,14 +75,5 @@
         APP_GID \
         APP_NO_CACHE
 
-  # :: default environment
-    ENV APP_IMAGE=${APP_IMAGE} \
-        APP_NAME=${APP_NAME} \
-        APP_VERSION=${APP_VERSION} \
-        APP_ROOT=${APP_ROOT}
-
   # :: multi-stage
     COPY --from=build ${APP_ROOT}/ /
-
-# :: EXECUTE
-  USER ${APP_UID}:${APP_GID}
