@@ -16,7 +16,8 @@
 # :: OPENSSL
   FROM alpine AS build
   COPY --from=util-bin / /
-  ARG APP_VERSION \
+  ARG APP_ROOT \
+      APP_VERSION \
       TARGETARCH \
       TARGETVARIANT
 
@@ -51,9 +52,9 @@
     esac; \
     make -s -j $(nproc) 2>&1 > /dev/null; \
     make -s -j $(nproc) install_sw 2>&1 > /dev/null; \
-    mkdir -p /distroless/usr/lib; \
-    cp -af /openssl-${APP_OPENSSL_VERSION}/libssl.a /distroless/usr/lib; \
-    cp -af /openssl-${APP_OPENSSL_VERSION}/libcrypto.a /distroless/usr/lib;
+    mkdir -p ${APP_ROOT}/usr/lib; \
+    cp -af /openssl-${APP_OPENSSL_VERSION}/libssl.a ${APP_ROOT}/usr/lib; \
+    cp -af /openssl-${APP_OPENSSL_VERSION}/libcrypto.a ${APP_ROOT}/usr/lib;
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
