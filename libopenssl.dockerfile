@@ -53,8 +53,8 @@
     make -s -j $(nproc) 2>&1 > /dev/null; \
     make -s -j $(nproc) install_sw 2>&1 > /dev/null; \
     mkdir -p ${APP_ROOT}/usr/lib; \
-    cp -af /openssl-${APP_OPENSSL_VERSION}/libssl.a ${APP_ROOT}/usr/lib; \
-    cp -af /openssl-${APP_OPENSSL_VERSION}/libcrypto.a ${APP_ROOT}/usr/lib;
+    cp -af /openssl-${APP_VERSION}/libssl.a ${APP_ROOT}/usr/lib; \
+    cp -af /openssl-${APP_VERSION}/libcrypto.a ${APP_ROOT}/usr/lib;
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
