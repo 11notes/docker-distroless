@@ -4,6 +4,7 @@
 # GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
+      APP_GO_VERSION=0.0 \
       BUILD_SRC=Tantalor93/dnspyre.git \
       BUILD_ROOT=/go/dnspyre
   ARG BUILD_BIN=${BUILD_ROOT}/dnspyre
@@ -15,7 +16,7 @@
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
 # :: DNSPYRE
-  FROM 11notes/go:1.25 AS build
+  FROM 11notes/go:${APP_GO_VERSION} AS build
   ARG APP_VERSION \
       BUILD_SRC \
       BUILD_ROOT \

@@ -4,6 +4,7 @@
   # GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
+      APP_GO_VERSION=0.0 \
       BUILD_SRC=minio/mc.git \
       BUILD_ROOT=/go/mc \
       BUILD_BIN=/mc
@@ -16,7 +17,7 @@
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
   # :: DNSLOOKUP
-  FROM 11notes/go:1.25 AS build
+  FROM 11notes/go:${APP_GO_VERSION} AS build
   ARG APP_VERSION \
       APP_VERSION_BUILD \
       BUILD_SRC \

@@ -4,6 +4,7 @@
   # GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
+      APP_GO_VERSION=0.0 \
       BUILD_SRC=11notes/go-localhealth.git \
       BUILD_ROOT=/go/go-localhealth
   ARG BUILD_BIN=${BUILD_ROOT}/localhealth
@@ -13,7 +14,7 @@
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
   # :: CMD-SOCKET
-  FROM 11notes/go:1.25 AS build
+  FROM 11notes/go:${APP_GO_VERSION} AS build
   ARG APP_VERSION \
       BUILD_SRC \
       BUILD_ROOT \
