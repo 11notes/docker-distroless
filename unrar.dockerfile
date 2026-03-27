@@ -2,14 +2,13 @@
 # ║                       SETUP                         ║
 # ╚═════════════════════════════════════════════════════╝
 # GLOBAL
-  ARG APP_UID=1000 \
-      APP_GID=1000 \
-      APP_VERSION=7.1.8 \
+  ARG APP_UID= \
+      APP_GID= \
+      APP_VERSION=0 \
       BUILD_ROOT=/unrar
   ARG BUILD_TAR=unrarsrc-${APP_VERSION}.tar.gz
   ARG BUILD_BIN=${BUILD_ROOT}/unrar \
-      BUILD_SRC=https://www.rarlab.com/rar/${BUILD_TAR} \
-      SHA256_SUM=b02e571a33af7711cd803080500370dc1d28eea82b2032480819d27462ad8b31
+      BUILD_SRC=https://www.rarlab.com/rar/${BUILD_TAR}
 
   # :: FOREIGN IMAGES
   FROM 11notes/util:bin AS util-bin     
@@ -48,7 +47,6 @@
     wget -q --show-progress --progress=bar:force ${BUILD_SRC};
 
   RUN set -ex; \
-    echo "${SHA256_SUM} ${BUILD_TAR}" | sha256sum -c; \
     pv ${BUILD_TAR} | tar xz;
 
   RUN set -ex; \
