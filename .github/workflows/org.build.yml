@@ -56,17 +56,18 @@ jobs:
 
       # DEFAULT
       - name: build container image
-        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
+        id: build
+        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7 # v4.0.0
         with:
           workflow: docker.yml
-          wait-for-completion: false
+          wait-for-completion: true
           token: "${{ secrets.REPOSITORY_TOKEN }}"
           inputs: '{ "release":"${{ github.event.inputs.release }}", "readme":"${{ github.event.inputs.readme }}", "run-name":"build ${{ github.event.inputs.ref }}", "etc":"${{ env.WORKFLOW_BUILD_BASE64JSON }}" }'
 
       # UNRAID
       - name: build container image for unraid
-        if: env.WORKFLOW_BUILD_UNRAID == 'true'
-        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
+        if: env.WORKFLOW_BUILD_UNRAID == 'true' && steps.build.outputs.workflow-conclusion == 'success'
+        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7 # v4.0.0
         with:
           workflow: docker.yml
           wait-for-completion: false
@@ -75,8 +76,8 @@ jobs:
 
       # NOBODY
       - name: build container image for nobody
-        if: env.WORKFLOW_BUILD_NOBODY == 'true'
-        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
+        if: env.WORKFLOW_BUILD_NOBODY == 'true' && steps.build.outputs.workflow-conclusion == 'success'
+        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7 # v4.0.0
         with:
           workflow: docker.yml
           wait-for-completion: false
