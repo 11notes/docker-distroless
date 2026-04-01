@@ -160,6 +160,13 @@ jobs:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
 
+      # SETUP NODE JS
+      - name: update / setup node
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+      - run: npm i semver
+
       # SETUP ENVIRONMENT VARIABLES AND INPUTS
       - name: init / setup environment
         id: setup-environment
@@ -173,6 +180,10 @@ jobs:
             const inputs = `${{ toJSON(github.event.inputs) }}`.
               replace(/"platform":\s*"\[(.+)\]",/i, `"platform": [$1],`);
             const opt = {input:{}, dot:{}};
+            const semverMajor = require("semver/functions/major");
+            const semverMinor = require("semver/functions/minor");
+            const semverValid = require("semver/functions/valid");
+            const semverCoerce = require("semver/functions/coerce");
 
             try{
               if(inputs.length > 0){
@@ -240,7 +251,10 @@ jobs:
               }
               const result = await response.json();
               for(const dep in result){
+                const depSemver = semverValid(semverCoerce(result[dep]));
                 docker.app[`${dep}_version`] = `${result[dep]}`;
+                docker.app[`${dep}_major_minor_version`] = `${semverMajor(depSemver)}.${semverMinor(depSemver)}`;
+                docker.app[`${dep}_major_version`] = semverMajor(depSemver);
                 core.info(`setting APP_${String(dep).toUpperCase()}_VERSION to ${result[dep]}`);
               }
             }catch(e){
