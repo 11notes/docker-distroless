@@ -1,28 +1,25 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                       SETUP                         ║
 # ╚═════════════════════════════════════════════════════╝
-  # GLOBAL
+# GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
-      APP_GO_VERSION=0.0 \
-      BUILD_SRC=minio/mc.git \
-      BUILD_ROOT=/go/mc \
-      BUILD_BIN=/mc
+      APP_GO_VERSION=0.0
 
-  # :: FOREIGN IMAGES
+# :: FOREIGN IMAGES
   FROM 11notes/distroless AS distroless
 
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
-  # :: DNSLOOKUP
+  # :: MC
   FROM 11notes/go:${APP_GO_VERSION} AS build
   ARG APP_VERSION \
       APP_VERSION_BUILD \
-      BUILD_SRC \
-      BUILD_ROOT \
-      BUILD_BIN
+      BUILD_SRC=minio/mc.git \
+      BUILD_ROOT=/go/mc \
+      BUILD_BIN=/mc
 
   RUN set -ex; \
     SEMVER=$(echo ${APP_VERSION} | sed 's|\.|-|g'); \
