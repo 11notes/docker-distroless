@@ -8,6 +8,7 @@
 
 # :: FOREIGN IMAGES
   FROM 11notes/distroless AS distroless
+  FROM 11notes/util:bin AS util-bin
 
 
 # ╔═════════════════════════════════════════════════════╗
@@ -15,6 +16,7 @@
 # ╚═════════════════════════════════════════════════════╝
   # :: MC
   FROM 11notes/go:${APP_GO_VERSION} AS build
+  COPY --from=util-bin / /
   ARG APP_VERSION \
       APP_VERSION_BUILD \
       BUILD_SRC=minio/mc.git \
