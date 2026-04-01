@@ -27,6 +27,7 @@
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
+    eleven go upgrade; \
     eleven go build ${BUILD_BIN} main.go;
 
   RUN set -ex; \
