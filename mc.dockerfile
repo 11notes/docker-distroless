@@ -29,7 +29,11 @@
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
-    eleven go upgrade; \
+    eleven go patch google.golang.org/grpc v1.79.3 CVE-2026-33186; \
+    eleven go patch golang.org/x/crypto v0.45.0 CVE-2025-47914_CVE-2025-58181;
+
+  RUN set -ex; \
+    cd ${BUILD_ROOT}; \
     eleven go build ${BUILD_BIN} main.go;
 
   RUN set -ex; \
