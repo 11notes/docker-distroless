@@ -34,7 +34,8 @@ jobs:
               dockerfile:"pnpm.dockerfile",
               tag:"pnpm",
               version:"${{ env.LATEST_VERSION }}",
-              semver:{disable:{rolling: true}}
+              semver:{disable:{rolling: true}},
+              platform:"amd64,arm64",
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
