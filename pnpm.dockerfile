@@ -27,8 +27,8 @@
       ;; \
     esac; \
     eleven github asset pnpm/pnpm v${APP_VERSION} pnpm-linuxstatic-${TARGETARCH}${TARGETVARIANT}; \
-    mv pnpm-linuxstatic-${TARGETARCH}${TARGETVARIANT} pnpm; \
-    eleven distroless pnpm;
+    mkdir -p /distroless/usr/local/bin; \
+    mv pnpm-linuxstatic-${TARGETARCH}${TARGETVARIANT} /distroless/usr/local/bin/pnpm;
 
 
 # ╔═════════════════════════════════════════════════════╗
@@ -63,4 +63,4 @@
 # :: EXECUTE
   USER ${APP_UID}:${APP_GID}
   ENTRYPOINT ["/usr/local/bin/pnpm"]
-  CMD ["version"]
+  CMD ["--version"]
