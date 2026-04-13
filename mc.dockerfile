@@ -17,7 +17,9 @@
   # :: MC
   FROM 11notes/go:${APP_GO_VERSION} AS build
   COPY --from=util-bin / /
-  ARG APP_VERSION \
+  ARG TARGETARCH \
+      TARGETVARIANT \
+      APP_VERSION \
       APP_VERSION_BUILD \
       BUILD_SRC=minio/mc.git \
       BUILD_ROOT=/go/mc \
@@ -30,7 +32,7 @@
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
     eleven go patch google.golang.org/grpc v1.79.3 CVE-2026-33186; \
-    eleven go patch golang.org/x/crypto v0.45.0 CVE-2025-47914_CVE-2025-58181;
+    eleven go patch golang.org/x/crypto v0.45.0 CVE-2025-58181 CVE-2025-47914;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
