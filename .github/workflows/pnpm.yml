@@ -1,6 +1,11 @@
 name: pnpm
 on:
   workflow_dispatch:
+    inputs:
+      force:
+        description: 'force build, regardless if tag exists already'
+        required: false
+        default: 'false'
   schedule:
     - cron: "0 5 * * *"
   push:
@@ -15,7 +20,12 @@ jobs:
           LATEST_VERSION=$(curl -s https://api.github.com/repos/pnpm/pnpm/releases/latest | jq -r '.tag_name' | sed 's|v||')
           if [ "${LATEST_VERSION}" != "null" ]; then
             if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/pnpm-${LATEST_VERSION}; then
-              echo "tag ${LATEST_VERSION} exists already!"
+              if [ "${{ github.event.inputs.force }}" == "true" ]; then
+                echo "WORKFLOW_AUTO_UPDATE=true" >> "${GITHUB_ENV}"
+                echo "LATEST_VERSION=${LATEST_VERSION}" >> "${GITHUB_ENV}"
+              else
+                echo "tag ${LATEST_VERSION} exists already!"
+              fi
             else
               echo "WORKFLOW_AUTO_UPDATE=true" >> "${GITHUB_ENV}"
               echo "LATEST_VERSION=${LATEST_VERSION}" >> "${GITHUB_ENV}"
@@ -34,7 +44,7 @@ jobs:
               dockerfile:"pnpm.dockerfile",
               tag:"pnpm",
               version:"${{ env.LATEST_VERSION }}",
-              semver:{disable:{rolling: true}},
+              semver:{disable:{rolling: true}}
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
 
@@ -45,4 +55,4 @@ jobs:
           wait-for-completion: false
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"false", "run-name":"pnpm", "etc":"${{ env.WORKFLOW_BASE64JSON }}", "platform":"amd64,arm64" }'
+          inputs: '{ "release":"false", "readme":"false", "run-name":"pnpm", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
