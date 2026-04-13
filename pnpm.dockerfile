@@ -28,7 +28,8 @@
     esac; \
     eleven github asset pnpm/pnpm v${APP_VERSION} pnpm-linuxstatic-${TARGETARCH}${TARGETVARIANT}; \
     mkdir -p /distroless/usr/local/bin; \
-    mv pnpm-linuxstatic-${TARGETARCH}${TARGETVARIANT} /distroless/usr/local/bin/pnpm;
+    mv pnpm-linuxstatic-${TARGETARCH}${TARGETVARIANT} /distroless/usr/local/bin/pnpm; \
+    chmod +x /distroless/usr/local/bin/pnpm;
 
 
 # ╔═════════════════════════════════════════════════════╗
