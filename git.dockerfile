@@ -4,10 +4,10 @@
 # GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
-      BUILD_ROOT=/git \
-      APP_OPENSSL_VERSION=0.0.0 \
-      DEP_ZLIB_VERSION=1.3.1 \
-      DEP_CURL_VERSION=8.16.0
+      APP_OPENSSL_LTS_VERSION=0 \
+      APP_ZLIB_VERSION=0 \
+      DEP_CURL_VERSION=8.16.0 \
+      BUILD_ROOT=/git
   ARG BUILD_BIN=${BUILD_ROOT}/git
 
 # :: FOREIGN IMAGES
@@ -25,8 +25,8 @@
       APP_ROOT \
       TARGETARCH \
       TARGETVARIANT \
-      APP_OPENSSL_VERSION \
-      DEP_ZLIB_VERSION \
+      APP_OPENSSL_LTS_VERSION \
+      APP_ZLIB_VERSION \
       DEP_CURL_VERSION \
       BUILD_ROOT \
       BUILD_BIN
@@ -61,10 +61,10 @@
 
   # OPENSSL
   RUN set -ex; \
-    eleven github asset openssl/openssl openssl-${APP_OPENSSL_VERSION} openssl-${APP_OPENSSL_VERSION}.tar.gz;
+    eleven github asset openssl/openssl openssl-${APP_OPENSSL_LTS_VERSION} openssl-${APP_OPENSSL_LTS_VERSION}.tar.gz;
 
   RUN set -ex; \
-    cd /openssl-${APP_OPENSSL_VERSION}; \
+    cd /openssl-${APP_OPENSSL_LTS_VERSION}; \
     case "${TARGETARCH}${TARGETVARIANT}" in \
       "amd64"|"arm64") \
         ./Configure \
@@ -83,21 +83,21 @@
     make -s -j $(nproc) install_sw 2>&1 > /dev/null;
 
   RUN set -ex; \
-    cp -af /openssl-${APP_OPENSSL_VERSION}/libssl.a /usr/lib; \
-    cp -af /openssl-${APP_OPENSSL_VERSION}/libcrypto.a /usr/lib;
+    cp -af /openssl-${APP_OPENSSL_LTS_VERSION}/libssl.a /usr/lib; \
+    cp -af /openssl-${APP_OPENSSL_LTS_VERSION}/libcrypto.a /usr/lib;
 
   # ZLIB
   RUN set -ex; \
-    eleven github asset madler/zlib v${DEP_ZLIB_VERSION} zlib-${DEP_ZLIB_VERSION}.tar.gz;
+    eleven github asset madler/zlib v${APP_ZLIB_VERSION} zlib-${APP_ZLIB_VERSION}.tar.gz;
 
   RUN set -ex; \
-    cd /zlib-${DEP_ZLIB_VERSION}; \
+    cd /zlib-${APP_ZLIB_VERSION}; \
     ./configure --static; \
     make -s -j $(nproc) 2>&1 > /dev/null; \
     make -s -j $(nproc) install 2>&1 > /dev/null;
 
   RUN set -ex; \
-    cp -af /zlib-${DEP_ZLIB_VERSION}/libz.a /usr/lib;
+    cp -af /zlib-${APP_ZLIB_VERSION}/libz.a /usr/lib;
 
   # CURL
   RUN set -ex; \
@@ -143,8 +143,8 @@
         NO_TCLTK=YesPlease \
         ICONV_OMITS_BOM=Yes \
         USE_LIBPCRE2=YesPlease \
-        ZLIB_PATH=/zlib-${DEP_ZLIB_VERSION} \
-        OPENSSLDIR=/openssl-${APP_OPENSSL_VERSION} \
+        ZLIB_PATH=/zlib-${APP_ZLIB_VERSION} \
+        OPENSSLDIR=/openssl-${APP_OPENSSL_LTS_VERSION} \
         CURLDIR=/curl-${DEP_CURL_VERSION} \
         CURL_LDFLAGS="-lcurl -lssl -lcrypto -lz" \
         LDFLAGS="-static"
