@@ -43,6 +43,6 @@ jobs:
         uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
         with:
           wait-for-completion: false
-          workflow: docker.yml
+          workflow: org.container.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
           inputs: '{ "release":"false", "readme":"false", "run-name":"unrar", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
