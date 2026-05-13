@@ -135,7 +135,6 @@ jobs:
       DOCKER_IMAGE_ARGUMENTS: ${{ steps.setup-environment.outputs.DOCKER_IMAGE_ARGUMENTS }}
       DOCKER_CICD_LATEST: ${{ steps.setup-environment.outputs.DOCKER_CICD_LATEST }}
       WORKFLOW_BUILD: ${{ steps.setup-environment.outputs.WORKFLOW_BUILD }}
-      WORKFLOW_BUILD_SUCCESS: ${{ steps.build-success.outputs.WORKFLOW_BUILD_SUCCESS }}
 
     timeout-minutes: 1440
 
@@ -179,7 +178,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
-            const { existsSync, readFileSync } = require('node:fs');
+            const { existsSync, readFileSync, writeFileSync } = require('node:fs');
             const { resolve } = require('node:path');
             const { inspect } = require('node:util');
             const { Buffer } = require('node:buffer');
@@ -372,6 +371,10 @@ jobs:
                       case /11notes\/python\:\$\{APP_PYTHON_VERSION\}/ig.test(file): core.exportVariable('WORKFLOW_IMAGE_DEPENDENCY', 'python'); break;
                       case /11notes\/php\:\$\{APP_PHP_VERSION\}/ig.test(file): core.exportVariable('WORKFLOW_IMAGE_DEPENDENCY', 'php'); break;
                       case /11notes\/php-fpm\:\$\{APP_PHP_VERSION\}/ig.test(file): core.exportVariable('WORKFLOW_IMAGE_DEPENDENCY', 'php'); break;
+                      case /11notes\/dotnetsdk\:\$\{APP_DOTNET8_VERSION\}/ig.test(file): core.exportVariable('WORKFLOW_IMAGE_DEPENDENCY', 'dotnet8'); break;
+                      case /11notes\/dotnetsdk\:\$\{APP_DOTNET9_VERSION\}/ig.test(file): core.exportVariable('WORKFLOW_IMAGE_DEPENDENCY', 'dotnet9'); break;
+                      case /11notes\/dotnetsdk\:\$\{APP_DOTNET10_VERSION\}/ig.test(file): core.exportVariable('WORKFLOW_IMAGE_DEPENDENCY', 'dotnet10'); break;
+                      case /11notes\/dotnetsdk\:\$\{APP_DOTNET11_VERSION\}/ig.test(file): core.exportVariable('WORKFLOW_IMAGE_DEPENDENCY', 'dotnet11'); break;
                     }
                   }catch(e){
                     throw new Error(`could not open ./${dockerfile}: ${e}`);
@@ -383,6 +386,24 @@ jobs:
                 core.warning(e);
               }
 
+            // export all variables
+              const objectToEnvArray = (o, p = '', a = []) => {
+                for(const k in o){
+                  switch(typeof(o[k])){
+                    case 'object':
+                    case 'array':
+                      objectToEnvArray(o[k], `${p}${k}_`.toUpperCase(), a)
+                      break;
+                    default:
+                      a.push(`${p}${k}`.toUpperCase() + '=' + o[k]);
+                  }
+                }
+                return(a);
+              }
+
+              writeFileSync('${{ runner.temp }}/global.env', objectToEnvArray(opt.dot, 'GLOBAL_JSON_').join('\n') + '\n', {encoding: "utf8", flag: "a+"});
+              writeFileSync('${{ runner.temp }}/global.env', objectToEnvArray(docker, 'GLOBAL_DOCKER_').join('\n') + '\n', {encoding: "utf8", flag: "a+"});
+              writeFileSync('${{ runner.temp }}/global.env', objectToEnvArray(opt.input?.etc, 'GLOBAL_INPUT_ETC_').join('\n') + '\n', {encoding: "utf8", flag: "a+"});
 
             // print
               core.info(inspect({opt:opt, docker:docker}, {showHidden:false, depth:null, colors:true}));
@@ -393,7 +414,7 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       # REGISTER WORKFLOW DEPENDENCY ON BASE IMAGE
       - name: register image dependency
-        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
+        uses: benc-uk/workflow-dispatch@7a027648b88c2413826b6ddd6c76114894dc5ec4 #v1.3.1
         if: env.WORKFLOW_IMAGE_DEPENDENCY != '' && matrix.platform == 'amd64'
         with:
           wait-for-completion: false
@@ -535,7 +556,7 @@ jobs:
         if: env.WORKFLOW_BUILD == 'true' && steps.image-push.outcome == 'success'
         id: build-success
         run: |
-          echo "WORKFLOW_BUILD_SUCCESS=true" >> $GITHUB_OUTPUT
+          echo "GLOBAL_WORKFLOW_BUILD_SUCCESS=true" >> ${{ runner.temp }}/global.env
 
 
       # ╔═════════════════════════════════════════════════════╗
@@ -559,6 +580,16 @@ jobs:
           body: ${{ steps.git-release.outputs.release }}
           draft: false
           prerelease: false
+
+      # ╔═════════════════════════════════════════════════════╗
+      # ║            UPLOAD GLOBAL.ENV ARTIFACT               ║
+      # ╚═════════════════════════════════════════════════════╝
+      - name: github workflow / export environment
+        if: matrix.platform == 'amd64'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: global.env
+          path: ${{ runner.temp }}/global.env
 
 
   # ╔═════════════════════════════════════════════════════╗
@@ -589,6 +620,21 @@ jobs:
       id-token: write
 
     steps:
+      # ╔═════════════════════════════════════════════════════╗
+      # ║               LOAD GLOBAL VARIABLES                 ║
+      # ╚═════════════════════════════════════════════════════╝
+      # LOAD ARTIFACT
+      - name: global variables / load artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: global.env
+          path: ${{ runner.temp }}
+
+      # SET ENV
+      - name: global variables / set env
+        run: cat ${{ runner.temp }}/global.env >> $GITHUB_ENV
+
+
       # ╔═════════════════════════════════════════════════════╗
       # ║             CONTAINER REGISTRY LOGIN                ║
       # ╚═════════════════════════════════════════════════════╝
@@ -674,12 +720,25 @@ jobs:
       DOCKER_IMAGE_NAME_AND_VERSION: ${{ needs.docker.outputs.DOCKER_IMAGE_NAME_AND_VERSION }}
       DOCKER_IMAGE_ARGUMENTS: ${{ needs.docker.outputs.DOCKER_IMAGE_ARGUMENTS }}
       DOCKER_IMAGE_TAG_LATEST: ${{ needs.docker.outputs.DOCKER_IMAGE_TAG_LATEST }}
-      DOCKER_CICD_LATEST: ${{ needs.docker.outputs.DOCKER_CICD_LATEST }}
 
     permissions:
       contents: write
 
     steps:
+      # ╔═════════════════════════════════════════════════════╗
+      # ║               LOAD GLOBAL VARIABLES                 ║
+      # ╚═════════════════════════════════════════════════════╝
+      # LOAD ARTIFACT
+      - name: global variables / load artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: global.env
+          path: ${{ runner.temp }}
+
+      # SET ENV
+      - name: global variables / set env
+        run: cat ${{ runner.temp }}/global.env >> $GITHUB_ENV
+
       # ╔═════════════════════════════════════════════════════╗
       # ║                 SETUP ENVIRONMENT                   ║
       # ╚═════════════════════════════════════════════════════╝
@@ -712,7 +771,7 @@ jobs:
 
       # CREATE MAKRDOWN OF README.md
       - name: README.md / create
-        if: github.event.inputs.readme == 'true' && (needs.docker.outputs.WORKFLOW_BUILD_SUCCESS == 'true' || github.event.inputs.run-name == 'readme')
+        if: github.event.inputs.readme == 'true' && (env.GLOBAL_WORKFLOW_BUILD_SUCCESS == 'true' || github.event.inputs.run-name == 'readme')
         id: github-readme
         continue-on-error: true
         uses: 11notes/action-docker-readme@v1
@@ -788,14 +847,3 @@ jobs:
             }' \
             --fail | jq -r ".access_token")
           curl -s -H "Authorization: Bearer ${TOKEN}" -X DELETE https://hub.docker.com/v2/repositories/${{ env.DOCKER_IMAGE_NAME }}/tags/latest | echo ":latest tag not found"
-
-      # CREATE MAKRDOWN OF README.md
-      - name: CICD / update latest.json
-        if: needs.docker.outputs.WORKFLOW_BUILD_SUCCESS == 'true' && env.DOCKER_CICD_LATEST == 'true'
-        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
-        with:
-          wait-for-completion: false
-          workflow: json.latest.yml
-          repo: 11notes/CICD
-          token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "app":"dotnet8", "version":"${{ env.LATEST_VERSION_80 }}" }'
