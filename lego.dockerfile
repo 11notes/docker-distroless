@@ -37,7 +37,7 @@
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
-    go build -trimpath -ldflags '-X "main.version='${APP_VERSION}'" -extldflags=-static' -o  dist/lego ./cmd/lego/;
+    go build -trimpath -ldflags '-X "main.version='${APP_VERSION}'" -extldflags=-static' -o dist/lego ./cmd/;
 
   RUN set -ex; \
     eleven distroless ${BUILD_BIN};
