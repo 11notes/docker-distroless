@@ -15,7 +15,7 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       - name: cron-update / get stable version
         run: |
-          STABLE_VERSION=$(curl -sSL https://nodejs.org/en/download | grep -oE 'v[0-9]+.[0-9]+.[0-9]+ \(LTS\)' | head -n 1 | sed 's/v//' | sed 's/ (LTS)//')
+          STABLE_VERSION=$(curl -sSL https://nodejs.org/dist/index.json | jq -r '[.[] | select(.lts != false)][0].version' | sed 's|v||')
           if [ "${STABLE_VERSION}" != "null" ]; then
             if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/node-${STABLE_VERSION}-stable; then
               echo "tag ${STABLE_VERSION} exists already!"
