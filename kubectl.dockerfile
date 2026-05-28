@@ -30,7 +30,7 @@
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
-    go build -ldflags="-extldflags=-static -X k8s.io/component-base/version.gitVersion=${APP_VERSION}" -o ${BUILD_BIN} ./cmd/kubectl;
+    go build -ldflags="-extldflags=-static -X k8s.io/component-base/version.gitVersion=v${APP_VERSION}" -o ${BUILD_BIN} ./cmd/kubectl;
 
   RUN set -ex; \
     ${BUILD_BIN} version | grep -q "${APP_VERSION}";
