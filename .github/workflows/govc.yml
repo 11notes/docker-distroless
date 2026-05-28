@@ -55,4 +55,4 @@ jobs:
           wait-for-completion: false
           workflow: org.container.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"false", "run-name":"govc", "platform":"amd64,arm64", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
+          inputs: '{ "release":"false", "readme":"false", "run-name":"govc", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
