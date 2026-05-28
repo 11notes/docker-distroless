@@ -9,7 +9,7 @@
 # APP
   ARG BUILD_SRC=https://github.com/vmware/govmomi.git \
       BUILD_ROOT=/go/govmomi \
-      BUILD_BIN=/go/govmomi
+      BUILD_BIN=/govc
 
   # :: FOREIGN IMAGES
   FROM 11notes/distroless AS distroless
