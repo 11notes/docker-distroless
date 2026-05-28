@@ -1,20 +1,20 @@
-name: lego
+name: talosctl
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 5 * * *"
   push:
     tags:
-      - 'lego'
+      - 'talosctl'
 jobs:
-  lego:
+  talosctl:
     runs-on: ubuntu-latest
     steps:
       - name: cron-update / get latest version
         run: |
           LATEST_VERSION=$(curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | jq -r '.tag_name' | sed 's|v||')
           if [ "${LATEST_VERSION}" != "null" ]; then
-            if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/lego-${LATEST_VERSION}; then
+            if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/talosctl-${LATEST_VERSION}; then
               echo "tag ${LATEST_VERSION} exists already!"
             else
               echo "WORKFLOW_AUTO_UPDATE=true" >> "${GITHUB_ENV}"
@@ -31,8 +31,8 @@ jobs:
           script: |
             const { Buffer } = require('node:buffer');
             const etc = {
-              dockerfile:"lego.dockerfile",
-              tag:"lego",
+              dockerfile:"talosctl.dockerfile",
+              tag:"talosctl",
               version:"${{ env.LATEST_VERSION }}",
               semver:{disable:{rolling: true}}
             };
@@ -45,4 +45,4 @@ jobs:
           wait-for-completion: false
           workflow: org.container.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"false", "run-name":"lego", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
+          inputs: '{ "release":"false", "readme":"false", "run-name":"talosctl", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
