@@ -3,7 +3,8 @@
 # ╚═════════════════════════════════════════════════════╝
 # GLOBAL
   ARG APP_UID=1000 \
-      APP_GID=1000
+      APP_GID=1000 \
+      APP_RUST_VERSION=0
 
 # APP
   ARG BUILD_SRC=https://github.com/Y2Z/monolith.git \
@@ -17,7 +18,7 @@
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
 # :: MONOLITH
-  FROM alpine AS build
+  FROM 11notes/rust:${APP_RUST_VERSION} AS build
   COPY --from=util-bin / /
   ARG TARGETARCH \
       TARGETVARIANT \
@@ -28,42 +29,18 @@
 
   RUN set -ex; \
     apk --update --no-cache add \
-      curl \
-      gcc \
-      perl \
-      g++ \
-      make \
-      linux-headers \
-      git \
-      cmake \
-      build-base \
-      samurai \
-      python3 \
-      py3-pkgconfig \
-      pkgconfig;
-
-  RUN set -eux; \
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs/ | sh;
+      perl;
 
   RUN set -ex; \
     git clone --recurse-submodules -j8 ${BUILD_SRC} -b v${APP_VERSION};
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
-    case "${TARGETARCH}${TARGETVARIANT}" in \
-      "amd64") \
-        TARGET="x86_64-unknown-linux-musl"; \
-      ;; \
-      \
-      "arm64") \
-        TARGET="aarch64-unknown-linux-musl"; \
-      ;; \
-      "armv7") \
-        TARGET="armv7-unknown-linux-musleabi"; \
-      ;; \
-    esac; \
-    cargo build --release --target ${TARGET}; \
-    eleven distroless ${BUILD_ROOT}/target/${TARGET}/release/monolith;
+    cargo build --release;
+
+  RUN set -ex; \
+    cd ${BUILD_ROOT}; \
+    eleven distroless ./target/release/monolith;
 
 
 # ╔═════════════════════════════════════════════════════╗
