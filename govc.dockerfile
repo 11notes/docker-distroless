@@ -9,7 +9,7 @@
 # APP
   ARG BUILD_SRC=https://github.com/vmware/govmomi.git \
       BUILD_ROOT=/go/govmomi \
-      BUILD_BIN=/govc
+      BUILD_BIN=/go/govmomi
 
   # :: FOREIGN IMAGES
   FROM 11notes/distroless AS distroless
@@ -18,7 +18,7 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
-# :: govc
+# :: GOVC
   FROM 11notes/go:${APP_GO_VERSION} AS build
   ARG APP_VERSION \
       BUILD_SRC \
@@ -26,10 +26,11 @@
       BUILD_BIN
 
   RUN set -ex; \
-    git clone ${BUILD_SRC} -b v${APP_VERSION};
+    eleven git clone ${BUILD_SRC} v${APP_VERSION};
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
+    sed -i 's|BuildVersion = "v0.0.0"|BuildVersion = "v'${APP_VERSION}'"|' ./cli/flags/version.go; \
     eleven go build ${BUILD_BIN} ./govc/main.go;
 
   RUN set -ex; \

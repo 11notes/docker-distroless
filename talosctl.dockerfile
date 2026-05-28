@@ -26,7 +26,7 @@
       BUILD_BIN
 
   RUN set -ex; \
-    git clone ${BUILD_SRC} -b v${APP_VERSION};
+    eleven git clone ${BUILD_SRC} v${APP_VERSION};
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
