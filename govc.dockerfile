@@ -30,8 +30,7 @@
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
-    sed -i 's|BuildVersion = "v0.0.0"|BuildVersion = "v'${APP_VERSION}'"|' ./cli/flags/version.go; \
-    eleven go build ${BUILD_BIN} ./govc/main.go;
+    go build -ldflags="-extldflags=-static -X main.version=${APP_VERSION}" -o ${BUILD_BIN} ./govc/main.go;
 
   RUN set -ex; \
     ${BUILD_BIN} version | grep -q "${APP_VERSION}";
