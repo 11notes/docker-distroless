@@ -7,7 +7,7 @@
       APP_GO_VERSION=0
 
 # APP
-  ARG BUILD_SRC=https://github.com/vmware/govmomi.git \
+  ARG BUILD_SRC=vmware/govmomi.git \
       BUILD_ROOT=/go/govmomi \
       BUILD_BIN=/govc
 
@@ -30,7 +30,7 @@
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
-    go build -ldflags="-extldflags=-static -X main.version=${APP_VERSION}" -o ${BUILD_BIN} ./govc/main.go;
+    go build -ldflags="-extldflags=-static -X github.com/vmware/govmomi/cli/flags.BuildVersion=${APP_VERSION}" -o ${BUILD_BIN} ./govc/main.go;
 
   RUN set -ex; \
     ${BUILD_BIN} version | grep -q "${APP_VERSION}";
