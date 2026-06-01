@@ -653,6 +653,7 @@ jobs:
   # ║                                                     ║
   # ╚═════════════════════════════════════════════════════╝
   registry-matrix:
+    needs: docker
     name: create registry matrix
     runs-on: ubuntu-latest
     outputs:
