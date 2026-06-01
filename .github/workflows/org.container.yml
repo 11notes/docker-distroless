@@ -673,6 +673,7 @@ jobs:
       # SET ENV
       - name: global variables / set env
         run: cat ${{ runner.temp }}/global.env >> $GITHUB_ENV
+
       - name: matrix / setup registry
         id: setup-matrix
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
@@ -696,7 +697,9 @@ jobs:
 
 
   merge_platform_images:
-    needs: registry-matrix
+    needs:
+      - docker
+      - registry-matrix
     if: needs.docker.outputs.WORKFLOW_BUILD == 'true'
     name: merge platform images to a single manifest
     runs-on: ubuntu-latest
