@@ -646,7 +646,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        registry: [docker.io, ghcr.io, quay.io]
+        registry: [docker.io, ghcr.io]
 
     env:
       DOCKER_IMAGE_NAME: ${{ needs.docker.outputs.DOCKER_IMAGE_NAME }}
