@@ -165,6 +165,11 @@ jobs:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
 
+      # CHECK IF QUAY.IO IS DOWN AGAIN
+      - name: init / check quay.io
+        run: |
+          echo "QUAY_STATUS=$(curl -s https://status.redhat.com/api/v2/components.json | jq -r '.components[] | select(.name | contains("Quay") or contains("quay")) | .status')" >> $GITHUB_ENV
+
       # SETUP NODE JS
       - name: update / setup node
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -243,6 +248,11 @@ jobs:
                 registry:'localhost:5000/',
                 enable:(opt.input?.etc?.cache === undefined) ? true : opt.input.etc.cache,
               },
+              registry:{
+                docker:{enabled:true},
+                ghcr:{enabled:true},
+                quay:{enabled:true},
+              },
               tags:[],
               merge_tags:[],
             };
@@ -309,7 +319,11 @@ jobs:
               for(const tag of docker.image.tags){
                 docker.tags.push(`${docker.image.name}:${docker.image.prefix}${tag}${docker.image.suffix}-${docker.image.platform.sanitized}`);
                 docker.tags.push(`ghcr.io/${docker.image.name}:${docker.image.prefix}${tag}${docker.image.suffix}-${docker.image.platform.sanitized}`);
-                docker.tags.push(`quay.io/${docker.image.name}:${docker.image.prefix}${tag}${docker.image.suffix}-${docker.image.platform.sanitized}`);
+                if('${{ env.QUAY_STATUS }}' === 'operational'){
+                  docker.tags.push(`quay.io/${docker.image.name}:${docker.image.prefix}${tag}${docker.image.suffix}-${docker.image.platform.sanitized}`);
+                }else{
+                  docker.registry.quay.enabled = false;
+                }
                 docker.merge_tags.push(`${docker.image.prefix}${tag}${docker.image.suffix}`);
               }
 
@@ -638,15 +652,59 @@ jobs:
   # ║                                                     ║
   # ║                                                     ║
   # ╚═════════════════════════════════════════════════════╝
+  registry-matrix:
+    name: create registry matrix
+    runs-on: ubuntu-latest
+    outputs:
+      stringify: ${{ steps.setup-matrix.outputs.stringify }}
+
+    steps:
+      # ╔═════════════════════════════════════════════════════╗
+      # ║               LOAD GLOBAL VARIABLES                 ║
+      # ╚═════════════════════════════════════════════════════╝
+      # LOAD ARTIFACT
+      - name: global variables / load artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: global.env
+          path: ${{ runner.temp }}
+
+      # SET ENV
+      - name: global variables / set env
+        run: cat ${{ runner.temp }}/global.env >> $GITHUB_ENV
+      - name: matrix / setup registry
+        id: setup-matrix
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          script: |
+            const { inspect } = require('node:util');
+
+            const matrix = {include:[]};
+
+            matrix.include.push({registry:"docker.io"});
+            matrix.include.push({registry:"ghcr.io"});
+            if('${{ env.GLOBAL_DOCKER_REGISTRY_QUAY_ENABLED }}' === 'true'){
+              matrix.include.push({registry:"quay.io"});
+            }
+
+            const stringify = JSON.stringify(matrix);
+            core.setOutput('stringify', stringify);
+
+            // print
+              core.info(inspect({matrix:matrix}, {showHidden:false, depth:null, colors:true}));
+
+
   merge_platform_images:
-    needs: docker
+    needs:
+      - docker
+      - registry-matrix
     if: needs.docker.outputs.WORKFLOW_BUILD == 'true'
     name: merge platform images to a single manifest
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        registry: [docker.io, ghcr.io]
+        registry: ${{ fromJSON(needs.registry-matrix.outputs.stringify) }}
 
     env:
       DOCKER_IMAGE_NAME: ${{ needs.docker.outputs.DOCKER_IMAGE_NAME }}
