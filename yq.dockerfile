@@ -8,8 +8,8 @@
 
 # APP
   ARG BUILD_SRC=https://github.com/mikefarah/yq.git \
-      BUILD_ROOT=/yq \
-      BUILD_BIN=/tmp/yq
+      BUILD_ROOT=/go/yq \
+      BUILD_BIN=/yq
 
 
 # ╔═════════════════════════════════════════════════════╗
