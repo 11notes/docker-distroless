@@ -654,6 +654,7 @@ jobs:
   # ╚═════════════════════════════════════════════════════╝
   registry-matrix:
     needs: docker
+    if: needs.docker.outputs.WORKFLOW_BUILD == 'true'
     name: create registry matrix
     runs-on: ubuntu-latest
     outputs:
@@ -697,10 +698,7 @@ jobs:
 
 
   merge_platform_images:
-    needs:
-      - docker
-      - registry-matrix
-    if: needs.docker.outputs.WORKFLOW_BUILD == 'true'
+    needs: registry-matrix
     name: merge platform images to a single manifest
     runs-on: ubuntu-latest
     strategy:
