@@ -27,20 +27,14 @@
     git clone ${BUILD_SRC} -b v${APP_VERSION};
 
   RUN set -ex; \
-    # fix CVE's
-    cd ${BUILD_ROOT}; \
-    eleven patchGoMod ${BUILD_ROOT}/go.mod "github.com/go-viper/mapstructure/v2|v2.3.0|GHSA-fv92-fjc5-jj9h"; \
-    eleven patchGoMod ${BUILD_ROOT}/go.mod "github.com/golang-jwt/jwt/v4|v4.5.2|CVE-2025-30204"; \
-    eleven patchGoMod ${BUILD_ROOT}/go.mod "github.com/golang-jwt/jwt/v5|v5.2.2|CVE-2025-30204"; \
-    eleven patchGoMod ${BUILD_ROOT}/go.mod "golang.org/x/net|v0.38.0|CVE-2025-22872"; \
-    go mod tidy;
-
-  RUN set -ex; \
     cd ${BUILD_ROOT}; \
     go build -trimpath -ldflags '-X "main.version='${APP_VERSION}'" -extldflags=-static' -o dist/lego ./cmd/;
 
   RUN set -ex; \
     eleven distroless ${BUILD_BIN};
+
+  RUN set -eux; \
+    /distroless/usr/local/bin/lego --version | grep -q "${APP_VERSION}";
 
 
 # ╔═════════════════════════════════════════════════════╗
