@@ -1,13 +1,15 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                       SETUP                         ║
 # ╚═════════════════════════════════════════════════════╝
-  # GLOBAL
+# GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
-      APP_GO_VERSION=0.0 \
-      BUILD_SRC=https://github.com/go-acme/lego.git \
-      BUILD_ROOT=/go/lego
-  ARG BUILD_BIN=${BUILD_ROOT}/dist/lego
+      APP_GO_VERSION=0.0
+
+# APP
+  ARG BUILD_SRC=https://github.com/go-acme/lego.git \
+      BUILD_ROOT=/go/lego \
+      BUILD_BIN=/lego
 
   # :: FOREIGN IMAGES
   FROM 11notes/distroless AS distroless
@@ -28,13 +30,13 @@
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
-    go build -trimpath -ldflags '-X "main.version='${APP_VERSION}'" -extldflags=-static' -o dist/lego ./cmd/;
+    go build -ldflags="-extldflags=-static -X main.version=${APP_VERSION}" -o ${BUILD_BIN} .;
 
   RUN set -ex; \
     eleven distroless ${BUILD_BIN};
 
   RUN set -eux; \
-    /distroless/usr/local/bin/lego --version | grep -q "${APP_VERSION}";
+    /distroless/usr/local/bin${BUILD_BIN} --version | grep -q "${APP_VERSION}";
 
 
 # ╔═════════════════════════════════════════════════════╗
