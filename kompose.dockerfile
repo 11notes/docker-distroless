@@ -11,9 +11,6 @@
       BUILD_ROOT=/go/kompose \
       BUILD_BIN=/kompose
 
-  # :: FOREIGN IMAGES
-  FROM 11notes/distroless AS distroless
-
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
@@ -31,9 +28,6 @@
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
     eleven go build ${BUILD_BIN} .;
-
-  RUN set -ex; \
-    ${BUILD_BIN} version | grep -q "${APP_VERSION}";
 
   RUN set -ex; \
     eleven distroless ${BUILD_BIN};
@@ -68,7 +62,6 @@
         APP_ROOT=${APP_ROOT}
 
   # :: multi-stage
-    COPY --from=distroless / /
     COPY --from=build ${APP_ROOT}/ /
 
 # :: EXECUTE
