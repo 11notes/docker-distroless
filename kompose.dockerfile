@@ -27,6 +27,10 @@
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
+    eleven go patch golang.org/x/net v0.55.0 CVE-2026-39821 GO-2026-5026;
+
+  RUN set -ex; \
+    cd ${BUILD_ROOT}; \
     eleven go build ${BUILD_BIN} .;
 
   RUN set -ex; \
