@@ -33,7 +33,7 @@
     cd ${BUILD_ROOT}; \
     eleven go patch google.golang.org/grpc v1.79.3 CVE-2026-33186; \
     eleven go patch golang.org/x/crypto v0.52.0 GO-2026-5006 GO-2026-5023 GO-2026-5017 GO-2026-5020 GO-2026-5005 GO-2026-5019; \
-    eleven go patch golang.org/x/net v0.55.0 GO-2026-5006 CVE-2026-39821 GO-2026-5026; \
+    eleven go patch golang.org/x/net v0.55.0 GO-2026-5006 CVE-2026-39821 GO-2026-5026;
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
