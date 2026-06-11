@@ -55,7 +55,7 @@
     eleven distroless ${BUILD_BIN};
 
   RUN set -ex; \
-    /distroless/usr/local/bin${BUILD_BIN} --version | grep -q "${APP_VERSION}";
+    /distroless/usr/local/bin/rsync --version | grep -q "${APP_VERSION}";
 
 
 # ╔═════════════════════════════════════════════════════╗
