@@ -83,7 +83,6 @@
         APP_ROOT=${APP_ROOT}
 
   # :: multi-stage
-    COPY --from=distroless / /
     COPY --from=build ${APP_ROOT}/ /
 
 # :: EXECUTE
