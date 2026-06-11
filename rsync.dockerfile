@@ -48,7 +48,8 @@
       --disable-zstd \
       --disable-md2man \
       CFLAGS="-O2 -static" \
-      LDFLAGS="-static";
+      LDFLAGS="-static"; \
+    make -s -j $(nproc) 2>&1 > /dev/null;
 
   RUN set -ex; \
     eleven distroless ${BUILD_BIN};
