@@ -30,6 +30,10 @@
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
+    eleven go patch golang.org/x/net v0.55.0 CVE-2026-39821;
+
+  RUN set -ex; \
+    cd ${BUILD_ROOT}; \
     go build -ldflags="-extldflags=-static -X k8s.io/component-base/version.gitVersion=v${APP_VERSION}" -o ${BUILD_BIN} ./cmd/kubectl;
 
   RUN set -ex; \
