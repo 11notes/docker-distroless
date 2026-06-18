@@ -34,8 +34,8 @@
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
-    go work vendor; \
     go mod tidy; \
+    go work vendor; \
     go build -ldflags="-extldflags=-static -X k8s.io/component-base/version.gitVersion=v${APP_VERSION}" -o ${BUILD_BIN} ./cmd/kubectl;
 
   RUN set -ex; \
