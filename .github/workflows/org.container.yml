@@ -254,9 +254,16 @@ jobs:
                 ghcr:{enabled:true},
                 quay:{enabled:true},
               },
+              grype:{
+                fail:(opt.input?.etc?.grype?.fail || opt.dot?.grype?.fail)
+              },
               tags:[],
               merge_tags:[],
             };
+
+            if(docker.grype.fail === undefined){
+              docker.grype.fail = false;
+            }
 
             try{
               // wait 2.5s too not trigger 429 from github
@@ -377,7 +384,7 @@ jobs:
 
               core.exportVariable('WORKFLOW_CREATE_RELEASE', (opt.input?.release === undefined) ? false : opt.input.release);
               core.exportVariable('WORKFLOW_CREATE_README', (opt.input?.readme === undefined) ? false : opt.input.readme);
-              core.exportVariable('WORKFLOW_GRYPE_FAIL_ON_SEVERITY', (opt.dot?.grype?.fail === undefined) ? true : opt.dot.grype.fail);
+              core.exportVariable('WORKFLOW_GRYPE_FAIL_ON_SEVERITY', docker.grype.fail);
               core.exportVariable('WORKFLOW_GRYPE_SEVERITY_CUTOFF', (opt.dot?.grype?.severity || 'critical'));
 
             // check if workflow needs to be registered
