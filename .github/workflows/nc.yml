@@ -15,7 +15,7 @@ jobs:
           LATEST_VERSION=$(curl -s "https://sources.debian.org/api/src/netcat-openbsd/"  | jq -r '.versions[] | select(.suites[] | . == "trixie") | .version')
           if [ "${LATEST_VERSION}" != "null" ]; then
             LATEST_BUILD=$(echo ${LATEST_VERSION} | awk -F "-" '{print $NF}')
-            LATEST_VERSION=$(echo ${LATEST_VERSION} | sed 's|-\d*||')
+            LATEST_VERSION=$(echo ${LATEST_VERSION} | awk -F '-' '{print $1}')
             if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/nc-${LATEST_VERSION}; then
               echo "tag ${LATEST_VERSION} exists already!"
             else
