@@ -57,7 +57,8 @@
       pcre2-static \
       expat-dev \
       expat-static \
-      musl-libintl;
+      musl-libintl \
+      cargo;
 
   # OPENSSL
   RUN set -ex; \
