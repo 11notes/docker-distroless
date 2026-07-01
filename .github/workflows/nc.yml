@@ -12,13 +12,15 @@ jobs:
     steps:
       - name: cron-update / get latest version
         run: |
-          LATEST_VERSION=$(curl -s "https://sources.debian.org/api/src/netcat-openbsd/?suite=trixie" | jq -r '.versions[0].version')
+          LATEST_VERSION=$(curl -s "https://sources.debian.org/api/src/netcat-openbsd/"  | jq -r '.versions[] | select(.suites[] | . == "trixie") | .version')
           if [ "${LATEST_VERSION}" != "null" ]; then
+            LATEST_BUILD=$(echo ${LATEST_VERSION} | awk -F "-" '{print $NF}')
             if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/nc-${LATEST_VERSION}; then
               echo "tag ${LATEST_VERSION} exists already!"
             else
               echo "WORKFLOW_AUTO_UPDATE=true" >> "${GITHUB_ENV}"
               echo "LATEST_VERSION=${LATEST_VERSION}" >> "${GITHUB_ENV}"
+              echo "LATEST_BUILD=${LATEST_BUILD}" >> "${GITHUB_ENV}"
             fi
           else
             echo "tag ${LATEST_VERSION} is null!"
@@ -34,6 +36,7 @@ jobs:
               dockerfile:"nc.dockerfile",
               tag:"nc",
               version:"${{ env.LATEST_VERSION }}",
+              build:"${{ env.LATEST_BUILD }}",
               semver:{disable:{rolling: true}}
             };
             core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));

@@ -19,6 +19,7 @@
   FROM alpine AS build
   COPY --from=util-bin / /
   ARG APP_VERSION \
+      APP_VERSION_BUILD \
       BUILD_SRC \
       BUILD_ROOT \
       BUILD_BIN
@@ -33,7 +34,11 @@
       libbsd-static;
 
   RUN set -ex; \
-    git clone ${BUILD_SRC} -b debian/${APP_VERSION}-1;
+    if [ -z "${APP_VERSION_BUILD}" ]; then \
+      git clone ${BUILD_SRC} -b debian/${APP_VERSION}; \
+    else \
+      git clone ${BUILD_SRC} -b debian/${APP_VERSION}-${APP_VERSION_BUILD}; \
+    fi;
 
   COPY ./src/nc/ /
 
