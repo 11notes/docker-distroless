@@ -33,7 +33,7 @@
     go build -ldflags="-extldflags=-static -X github.com/prometheus/common/version.Version=${APP_VERSION}" -o ${BUILD_BIN} ./cmd/postgres_exporter;
 
   RUN set -ex; \
-    ${BUILD_BIN} --version | grep -q "${APP_VERSION}";
+    ${BUILD_BIN} --version 2>&1 | grep -q "${APP_VERSION}";
 
   RUN set -ex; \
     eleven distroless ${BUILD_BIN};
