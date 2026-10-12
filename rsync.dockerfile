@@ -47,6 +47,7 @@
       --disable-lz4 \
       --disable-zstd \
       --disable-md2man \
+      --disable-idn \
       CFLAGS="-O2 -static" \
       LDFLAGS="-static"; \
     make -s -j $(nproc) 2>&1 > /dev/null;
