@@ -4,7 +4,7 @@
 # GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
-      APP_GO_VERSION=0.0 \
+      APP_GO_VERSION=0 \
       BUILD_SRC=https://github.com/11notes/go-ds.git \
       BUILD_ROOT=/go/go-ds
   ARG BUILD_BIN=${BUILD_ROOT}/ds
