@@ -48,8 +48,8 @@
       --disable-zstd \
       --disable-md2man \
       --disable-idn \
-      CFLAGS="-O2 -static" \
-      LDFLAGS="-static"; \
+      CFLAGS="-O2 -static -fno-pie" \
+      LDFLAGS="-static -no-pie"; \
     make -s -j $(nproc) 2>&1 > /dev/null;
 
   RUN set -ex; \
