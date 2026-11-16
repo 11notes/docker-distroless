@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: cron-update / get latest version
         run: |
-          LATEST_VERSION=$(curl -s https://gitlab.com/api/v4/projects/procps-ng%2Fprocps/repository/tags | jq --raw-output '.[0].name' | sed 's|v||')
+          LATEST_VERSION=$(curl -sSL https://gitlab.com/api/v4/projects/procps-ng%2Fprocps/repository/tags | jq --raw-output '.[0].name' | sed 's|v||')
           if [ "${LATEST_VERSION}" != "null" ]; then
             if curl -kILs --fail https://hub.docker.com/v2/repositories/11notes/distroless/tags/ps-${LATEST_VERSION}; then
               echo "tag ${LATEST_VERSION} exists already!"

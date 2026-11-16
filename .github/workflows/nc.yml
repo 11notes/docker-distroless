@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: cron-update / get latest version
         run: |
-          LATEST_VERSION=$(curl -s "https://sources.debian.org/api/src/netcat-openbsd/"  | jq -r '.versions[] | select(.suites[] | . == "trixie") | .version')
+          LATEST_VERSION=$(curl -sSL "https://sources.debian.org/api/src/netcat-openbsd/"  | jq -r '.versions[] | select(.suites[] | . == "trixie") | .version')
           if [ "${LATEST_VERSION}" != "null" ]; then
             LATEST_BUILD=$(echo ${LATEST_VERSION} | awk -F "-" '{print $NF}')
             LATEST_VERSION=$(echo ${LATEST_VERSION} | awk -F '-' '{print $1}')

@@ -22,7 +22,7 @@ jobs:
       # GET LATEST VERSION
       - name: init / get latest version of app
         run: |
-          LATEST_VERSION=$(curl -s https://api.github.com/repos/upx/upx/releases/latest | jq -r '.tag_name' | sed 's/v//')
+          LATEST_VERSION=$(curl -sSL https://api.github.com/repos/upx/upx/releases/latest | jq -r '.tag_name' | sed 's/v//')
           if [ "${LATEST_VERSION}" != "null" ]; then
             echo "APP_VERSION=${LATEST_VERSION}" >> "${GITHUB_ENV}"
           else
